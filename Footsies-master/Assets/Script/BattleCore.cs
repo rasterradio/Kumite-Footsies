@@ -38,6 +38,8 @@ namespace Footsies
         public bool debugP2Attack = false;
         public bool debugP1Guard = false;
         public bool debugP2Guard = false;
+        public bool debugP1Evade = false;
+        public bool debugP2Evade = false;
 
         public bool debugPlayLastRoundInput = false;
 
@@ -251,6 +253,7 @@ namespace Footsies
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
             _fighters.ForEach((f) => f.UpdateIntroAction());
+            _fighters.ForEach((f) => f.UpdateStance());
             _fighters.ForEach((f) => f.UpdateMovement());
             _fighters.ForEach((f) => f.UpdateBoxes());
 
@@ -269,6 +272,7 @@ namespace Footsies
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
             _fighters.ForEach((f) => f.UpdateActionRequest());
+            _fighters.ForEach((f) => f.UpdateStance());
             _fighters.ForEach((f) => f.UpdateMovement());
             _fighters.ForEach((f) => f.UpdateBoxes());
 
@@ -306,7 +310,10 @@ namespace Footsies
             InputData p1Input = new InputData();
             p1Input.input |= InputManager.Instance.GetButton(InputManager.Command.p1Left) ? (int)InputDefine.Left : 0;
             p1Input.input |= InputManager.Instance.GetButton(InputManager.Command.p1Right) ? (int)InputDefine.Right : 0;
+            p1Input.input |= InputManager.Instance.GetButton(InputManager.Command.p1Up) ? (int)InputDefine.Up : 0;
+            p1Input.input |= InputManager.Instance.GetButton(InputManager.Command.p1Down) ? (int)InputDefine.Down : 0;
             p1Input.input |= InputManager.Instance.GetButton(InputManager.Command.p1Attack) ? (int)InputDefine.Attack : 0;
+            p1Input.input |= InputManager.Instance.GetButton(InputManager.Command.p1Evade) ? (int)InputDefine.Evade : 0;
             p1Input.time = time;
 
             if (debugP1Attack)
@@ -336,13 +343,18 @@ namespace Footsies
             {
                 p2Input.input |= InputManager.Instance.GetButton(InputManager.Command.p2Left) ? (int)InputDefine.Left : 0;
                 p2Input.input |= InputManager.Instance.GetButton(InputManager.Command.p2Right) ? (int)InputDefine.Right : 0;
+                p2Input.input |= InputManager.Instance.GetButton(InputManager.Command.p2Up) ? (int)InputDefine.Up : 0;
+                p2Input.input |= InputManager.Instance.GetButton(InputManager.Command.p2Down) ? (int)InputDefine.Down : 0;
                 p2Input.input |= InputManager.Instance.GetButton(InputManager.Command.p2Attack) ? (int)InputDefine.Attack : 0;
+                p2Input.input |= InputManager.Instance.GetButton(InputManager.Command.p2Evade) ? (int)InputDefine.Evade : 0;
             }
 
             p2Input.time = time;
 
             if (debugP2Attack)
                 p2Input.input |= (int)InputDefine.Attack;
+            if (debugP2Evade)
+                p2Input.input |= (int)InputDefine.Evade;
             if (debugP2Guard)
                 p2Input.input |= (int)InputDefine.Right;
 

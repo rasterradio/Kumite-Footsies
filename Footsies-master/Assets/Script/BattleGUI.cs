@@ -171,7 +171,7 @@ namespace Footsies
             GUI.Label(labelRect, "Action: " + fighter.currentActionID + " " + (CommonActionID)fighter.currentActionID, debugTextStyle);
 
             labelRect.y += Screen.height * 0.03f;
-            GUI.Label(labelRect, "Stance: MID", debugTextStyle);
+            GUI.Label(labelRect, "Stance: " + fighter.currentStanceID + " " + (CommonStanceID)fighter.currentStanceID, debugTextStyle);
 
             foreach (var hurtbox in fighter.hurtboxes)
             {

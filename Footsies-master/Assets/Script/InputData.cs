@@ -10,8 +10,10 @@ namespace Footsies
         None = 0,
         Left = 1 << 0,
         Right = 1 << 1,
-        Attack = 1 << 2,
-        Evade = 3 << 2,
+        Up = 2 << 1,
+        Down = 3 << 2,
+        Attack = 4 << 4,
+        Evade = 5 << 5,
     }
 
     public class InputData

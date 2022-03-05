@@ -13,10 +13,14 @@ namespace Footsies
         {   
             p1Left,
             p1Right,
+            p1Up,
+            p1Down,
             p1Attack,
             p1Evade,
             p2Left,
             p2Right,
+            p2Up,
+            p2Down,
             p2Attack,
             p2Evade,
             cancel,
@@ -104,8 +108,23 @@ namespace Footsies
                 {
                     return true;
                 }
+                else if (command == Command.p1Up
+                    && IsXInputUp(gamePads[0].state))
+                {
+                    return true;
+                }
+                else if (command == Command.p1Down
+                    && IsXInputDown(gamePads[0].state))
+                {
+                    return true;
+                }
                 else if (command == Command.p1Attack
                     && gamePads[0].state.Buttons.A == ButtonState.Pressed)
+                {
+                    return true;
+                }
+                else if (command == Command.p1Evade
+                    && gamePads[0].state.Buttons.B == ButtonState.Pressed)
                 {
                     return true;
                 }
@@ -123,8 +142,23 @@ namespace Footsies
                 {
                     return true;
                 }
+                else if (command == Command.p2Up
+                    && IsXInputUp(gamePads[1].state))
+                {
+                    return true;
+                }
+                else if (command == Command.p2Down
+                    && IsXInputDown(gamePads[1].state))
+                {
+                    return true;
+                }
                 else if (command == Command.p2Attack
                     && gamePads[1].state.Buttons.A == ButtonState.Pressed)
+                {
+                    return true;
+                }
+                else if (command == Command.p2Evade
+                    && gamePads[0].state.Buttons.B == ButtonState.Pressed)
                 {
                     return true;
                 }
@@ -232,14 +266,26 @@ namespace Footsies
                     return "P1_Left";
                 case Command.p1Right:
                     return "P1_Right";
+                case Command.p1Up:
+                    return "P1_Up";
+                case Command.p1Down:
+                    return "P1_Down";
                 case Command.p1Attack:
                     return "P1_Attack";
+                case Command.p1Evade:
+                    return "P1_Evade";
                 case Command.p2Left:
                     return "P2_Left";
                 case Command.p2Right:
                     return "P2_Right";
+                case Command.p2Up:
+                    return "P2_Up";
+                case Command.p2Down:
+                    return "P2_Down";
                 case Command.p2Attack:
                     return "P2_Attack";
+                case Command.p2Evade:
+                    return "P2_Evade";
                 case Command.cancel:
                     return "Cancel";
             }
