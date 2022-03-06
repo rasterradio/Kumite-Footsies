@@ -44,16 +44,14 @@ namespace Footsies
         STAND = 0,
         FORWARD = 1,
         BACKWARD = 2,
-        UP = 3,
-        DOWN = 4,
         DASH_FORWARD = 10,
         DASH_BACKWARD = 11,
         EVADE_AWAY = 20,
         EVADE_TOWARDS = 21,
         N_ATTACK = 100,
-        B_ATTACK = 105,
+        H_PUNCH = 101,
+        L_PUNCH = 102,
         N_SPECIAL = 110,
-        B_SPECIAL = 115,
         DAMAGE = 200,
         GUARD_M = 301,
         GUARD_STAND = 305,
@@ -62,6 +60,14 @@ namespace Footsies
         GUARD_PROXIMITY = 350,
         DEAD = 500,
         WIN = 510,
+    }
+
+    public enum CommonStanceInputID
+    {
+        //unnecessary?
+        NEUTRAL = 0,
+        UP = 1,
+        DOWN = 2,
     }
 
     public enum CommonStanceID
@@ -97,6 +103,7 @@ namespace Footsies
 
         public int currentActionID { get; private set; }
         public int currentStanceID { get; private set; }
+        public int currentStanceInputID { get; private set; }
         public int currentActionFrame { get; private set; }
         public int currentActionFrameCount { get { return fighterData.actions[currentActionID].frameCount; } }
         private bool isActionEnd { get { return (currentActionFrame >= fighterData.actions[currentActionID].frameCount); } }
@@ -207,6 +214,31 @@ namespace Footsies
             RequestAction((int)CommonActionID.STAND);
         }
 
+        public void UpdateStance()
+        {
+            var isUp = IsUpInput(input[0]);
+            var isDown = IsDownInput(input[0]);
+            //if (isInHitStun)
+            //    return;
+
+            if (isUp && isDown)
+            {
+                currentStanceID = (int)CommonStanceID.MID;
+            }
+            else if (isUp)
+            {
+                currentStanceID = (int)CommonStanceID.HIGH;
+            }
+            else if (isDown)
+            {
+                currentStanceID = (int)CommonStanceID.LOW;
+            }
+            else
+            {
+                currentStanceID = (int)CommonStanceID.MID;
+            }
+        }
+
         /// <summary>
         /// Update action request
         /// </summary>
@@ -242,27 +274,26 @@ namespace Footsies
 
             var isForward = IsForwardInput(input[0]);
             var isBackward = IsBackwardInput(input[0]);
-            var isUp = IsUpInput(input[0]);
-            var isDown = IsDownInput(input[0]);
             bool isAttack = IsAttackInput(inputDown[0]);
             bool isEvade = IsEvadeInput(inputDown[0]);
             if (CheckSpecialAttackInput())
             {
-                if (isBackward || isForward)
-                    RequestAction((int)CommonActionID.B_SPECIAL);
-                else
                     RequestAction((int)CommonActionID.N_SPECIAL);
             }
             else if (isAttack)
             {
-                if ((currentActionID == (int)CommonActionID.N_ATTACK ||
-                    currentActionID == (int)CommonActionID.B_ATTACK) &&
-                    !isActionEnd)
+                if ((currentActionID == (int)CommonActionID.N_ATTACK && !isActionEnd))
                     RequestAction((int)CommonActionID.N_SPECIAL);
                 else
                 {
-                    if(isBackward || isForward)
-                        RequestAction((int)CommonActionID.B_ATTACK);
+                    if (currentStanceID == (int)CommonStanceID.HIGH)
+                    {
+                        RequestAction((int)CommonActionID.H_PUNCH);
+                    }
+                    else if (currentStanceID == (int)CommonStanceID.LOW)
+                    {
+                        RequestAction((int)CommonActionID.L_PUNCH);
+                    }
                     else
                         RequestAction((int)CommonActionID.N_ATTACK);
                 }
@@ -298,24 +329,6 @@ namespace Footsies
                 RequestAction((int)CommonActionID.STAND);
             }
 
-            /*//request stance changes
-            if (isUp && isDown)
-            {
-                RequestAction((int)CommonStanceID.MID);
-            }
-            else if (isUp)
-            {
-                RequestAction((int)CommonStanceID.HIGH);
-            }
-            else if (isDown)
-            {
-                RequestAction((int)CommonStanceID.LOW);
-            }
-            else
-            {
-                RequestAction((int)CommonStanceID.MID);
-            }*/
-
             isReserveProximityGuard = false;
         }
 
@@ -349,32 +362,6 @@ namespace Footsies
                 {
                     position.x += velocity_x * sign * Time.deltaTime;
                 }
-            }
-        }
-
-        public void UpdateStance()
-        {
-            //if (isInHitStun)
-            //    return;
-
-            /*if (isUp && isDown)
-            {
-                RequestAction((int)CommonStanceID.MID);
-            }*/
-            Debug.Log(currentActionID);
-
-            if (currentActionID == (int)CommonActionID.UP)
-            {
-                Debug.Log("HI!");
-                currentStanceID = (int)CommonStanceID.HIGH;
-            }
-            else if (currentActionID == (int)CommonActionID.DOWN)
-            {
-                currentStanceID = (int)CommonStanceID.LOW;
-            }
-            else
-            {
-                currentStanceID = (int)CommonStanceID.MID;
             }
         }
 

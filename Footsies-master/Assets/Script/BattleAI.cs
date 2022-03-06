@@ -345,9 +345,9 @@ namespace Footsies
                                                     || battleCore.fighter1.currentActionID == (int)CommonActionID.GUARD_STAND
                                                     || battleCore.fighter1.currentActionID == (int)CommonActionID.GUARD_M);
             currentFightState.isOpponentNormalAttack = (battleCore.fighter1.currentActionID == (int)CommonActionID.N_ATTACK
-                                                    || battleCore.fighter1.currentActionID == (int)CommonActionID.B_ATTACK);
-            currentFightState.isOpponentSpecialAttack = (battleCore.fighter1.currentActionID == (int)CommonActionID.N_SPECIAL
-                                                    || battleCore.fighter1.currentActionID == (int)CommonActionID.B_SPECIAL);
+                                                    || battleCore.fighter1.currentActionID == (int)CommonActionID.H_PUNCH
+                                                    || battleCore.fighter1.currentActionID == (int)CommonActionID.L_PUNCH);
+            currentFightState.isOpponentSpecialAttack = (battleCore.fighter1.currentActionID == (int)CommonActionID.N_SPECIAL);
 
             for (int i = 1; i < fightStates.Length; i++)
             {

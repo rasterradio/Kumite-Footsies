@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -51,4 +52,24 @@ MonoBehaviour:
     guardHealthDamage: 1
     hitStunFrame: 0
     guardStunFrame: 15
+    guardBreakStunFrame: 30
+  - attackID: 3
+    attackName: H_PUNCH
+    damageActionID: 500
+    guardActionID: 301
+    numberOfHit: 1
+    vitalHealthDamage: 1
+    guardHealthDamage: 1
+    hitStunFrame: 0
+    guardStunFrame: 15
+    guardBreakStunFrame: 30
+  - attackID: 4
+    attackName: L_PUNCH
+    damageActionID: 200
+    guardActionID: 305
+    numberOfHit: 1
+    vitalHealthDamage: 0
+    guardHealthDamage: 1
+    hitStunFrame: 12
+    guardStunFrame: 12
     guardBreakStunFrame: 30
