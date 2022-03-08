@@ -21,5 +21,7 @@ namespace Footsies
         public int hitStunFrame;
         public int guardStunFrame;
         public int guardBreakStunFrame;
+
+        public int stanceID;
     }
 }

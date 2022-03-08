@@ -464,6 +464,7 @@ namespace Footsies
                     {
                         attacker.NotifyAttackHit(damaged, damagePos);
                         var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
+                        Debug.Log(damageResult);
 
                         var hitStunFrame = attacker.GetHitStunFrame(damageResult, hitAttackID);
                         attacker.SetHitStun(hitStunFrame);
@@ -475,6 +476,20 @@ namespace Footsies
                     else if (isProximity)
                     {
                         damaged.NotifyInProximityGuardRange();
+                    }
+                    else
+                    {
+                        //need a way to pass opponent ActionData to defending player to check block
+                        //Debug.Log(attacker.getAttackData(hitAttackID));
+                        //damaged.CanGuard(attacker.getAttackData(hitAttackID).stanceAttackID);
+                        //damaged.CanGuard(attacker.getStanceData(hitAttackID);
+                        //var attackerStance = attacker.getStanceData(hitAttackID);
+
+                        //var canGuard = damaged.CanGuard(attacker.getStanceData(hitAttackID);
+                        //damaged.StanceGuard(attacker.getStanceData(hitAttackID));
+
+                        var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
+                        damageHandler(damaged, damagePos, damageResult);
                     }
                 }
 

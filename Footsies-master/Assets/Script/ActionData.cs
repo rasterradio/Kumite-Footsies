@@ -66,6 +66,14 @@ namespace Footsies
         Evade,
     }
 
+    [System.Serializable]
+    public enum AttackStanceType
+    {
+        Mid = 0,
+        High = 1,
+        Low = 2,
+    }
+
     [CreateAssetMenu]
     public class ActionData : ScriptableObject
     {
@@ -84,6 +92,7 @@ namespace Footsies
         public CancelData[] cancels;
         public bool alwaysCancelable;
         public AudioClip audioClip;
+        public AttackStanceType Stance;
 
         public MotionFrameData GetMotionData(int frame)
         {

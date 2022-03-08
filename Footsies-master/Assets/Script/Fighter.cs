@@ -62,13 +62,13 @@ namespace Footsies
         WIN = 510,
     }
 
-    public enum CommonStanceInputID
+    /*public enum CommonStanceInputID
     {
         //unnecessary?
         NEUTRAL = 0,
         UP = 1,
         DOWN = 2,
-    }
+    }*/
 
     public enum CommonStanceID
     {
@@ -414,9 +414,13 @@ namespace Footsies
                 }
             }
 
-            if (currentActionID == (int)CommonActionID.BACKWARD
+            //if (currentActionID == (int)CommonActionID.BACKWARD
+            //    || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
+
+            if (attackData.stanceID == currentStanceID
                 || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
             {
+                //if current stance matches opponent attack stance)
                 if (isGuardBreak)
                 {
                     SetCurrentAction(attackData.guardActionID);
@@ -475,6 +479,17 @@ namespace Footsies
             }
             
             return fighterData.attackData[attackID];
+        }
+
+        public AttackData getStanceData(int stanceID)
+        {
+            if (!fighterData.attackData.ContainsKey(stanceID))
+            {
+                Debug.LogWarning("Attack hit but StanceID=" + stanceID + " is not registered");
+                return null;
+            }
+
+            return fighterData.attackData[stanceID];
         }
 
         public void SetHitStun(int hitStunFrame)
@@ -787,6 +802,20 @@ namespace Footsies
             fightPosRect.height = dataRect.height;
 
             return fightPosRect;
+        }
+
+        public bool CanGuard(int attackerStanceID)//(attacker's stanceID int)
+        {
+            //int attackerStanceid = 
+            if (fighterData.actions[currentActionID].Type == ActionType.Guard)
+                return true;
+
+            //if (currentActionID == (int)CommonActionID.BACKWARD //this is how Footsies handles it (back to block)
+            if (currentStanceID == attackerStanceID)
+                return true;
+
+            else
+                return false;
         }
     }
 }
