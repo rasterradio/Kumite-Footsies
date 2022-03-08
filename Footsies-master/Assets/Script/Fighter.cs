@@ -237,6 +237,7 @@ namespace Footsies
             {
                 currentStanceID = (int)CommonStanceID.MID;
             }
+            Debug.Log(currentStanceID);
         }
 
         /// <summary>
@@ -413,7 +414,8 @@ namespace Footsies
                     guardHealth = 0;
                 }
             }
-
+            Debug.Log("Attacker stance is: " + attackData.stanceID);
+            Debug.Log("Blocker stance is: " + currentStanceID);
             //if (currentActionID == (int)CommonActionID.BACKWARD
             //    || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
 
@@ -423,20 +425,25 @@ namespace Footsies
                 //if current stance matches opponent attack stance)
                 if (isGuardBreak)
                 {
+                    Debug.Log("GUARD BREAK");
                     SetCurrentAction(attackData.guardActionID);
                     reserveDamageActionID = (int)CommonActionID.GUARD_BREAK;
                     SoundManager.Instance.playFighterSE(fighterData.actions[reserveDamageActionID].audioClip, isFaceRight, position.x);
+                    //Debug.Log("GUARD BREAK");
                     return DamageResult.GuardBreak;
                 }
                 else
                 {
+                    Debug.Log("GUARDED");
                     SetCurrentAction(attackData.guardActionID);
+                    //Debug.Log("GUARDED");
                     return DamageResult.Guard;
                 }
             }
             else
             {
-                if(attackData.vitalHealthDamage > 0)
+                Debug.Log("DAMAGE");
+                if (attackData.vitalHealthDamage > 0)
                 {
                     vitalHealth -= attackData.vitalHealthDamage;
                     if (vitalHealth <= 0)
@@ -444,6 +451,7 @@ namespace Footsies
                 }
                 
                 SetCurrentAction(attackData.damageActionID);
+                //Debug.Log("DAMAGE");
                 return DamageResult.Damage;
             }
         }

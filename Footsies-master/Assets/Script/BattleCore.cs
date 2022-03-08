@@ -488,8 +488,9 @@ namespace Footsies
                         //var canGuard = damaged.CanGuard(attacker.getStanceData(hitAttackID);
                         //damaged.StanceGuard(attacker.getStanceData(hitAttackID));
 
-                        var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
-                        damageHandler(damaged, damagePos, damageResult);
+                        /*var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
+                        Debug.Log(damageResult);
+                        damageHandler(damaged, damagePos, damageResult);*/
                     }
                 }
 
