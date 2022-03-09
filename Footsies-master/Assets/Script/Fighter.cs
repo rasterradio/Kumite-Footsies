@@ -405,11 +405,11 @@ namespace Footsies
                     guardHealth = 0;
                 }
             }
-            Debug.Log("Guard health is " + attackData.guardHealthDamage);
-            Debug.Log("Attacker stance is: " + attackData.stanceID);
+            //Debug.Log("Guard health is " + attackData.guardHealthDamage);
+            //Debug.Log("Attacker stance is: " + (int)attackData.stanceType);
             Debug.Log("Blocker stance is: " + currentStanceID);
 
-            if (attackData.stanceID == currentStanceID
+            if ((int)attackData.stanceType == currentStanceID
             //if (currentActionID == (int)CommonActionID.BACKWARD
                 || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
             {
@@ -474,17 +474,6 @@ namespace Footsies
             }
             
             return fighterData.attackData[attackID];
-        }
-
-        public AttackData getStanceData(int stanceID)
-        {
-            if (!fighterData.attackData.ContainsKey(stanceID))
-            {
-                Debug.LogWarning("Attack hit but StanceID=" + stanceID + " is not registered");
-                return null;
-            }
-
-            return fighterData.attackData[stanceID];
         }
 
         public void SetHitStun(int hitStunFrame)

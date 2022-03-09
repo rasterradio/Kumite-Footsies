@@ -21,7 +21,16 @@ namespace Footsies
         public int hitStunFrame;
         public int guardStunFrame;
         public int guardBreakStunFrame;
+        public StanceType stanceType;
 
-        public int stanceID;
+
+    }
+
+    [System.Serializable]
+    public enum StanceType
+    {
+        Mid = 0,
+        High = 1,
+        Low = 2,
     }
 }

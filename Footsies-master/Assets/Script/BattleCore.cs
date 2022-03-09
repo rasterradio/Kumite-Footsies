@@ -462,12 +462,11 @@ namespace Footsies
 
                     if (isHit)
                     {
-                        Debug.Log("yo!");
+                        //Debug.Log("Attacker stance is: " + attacker.getAttackData(hitAttackID).stanceType);
+                        Debug.Log("Attacker name is: " + attacker.getAttackData(hitAttackID).attackName);
                         //trying to figure out why the attacker stanceID for the move is not being set, or not being read properly
                         attacker.NotifyAttackHit(damaged, damagePos);
                         var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
-                        Debug.Log("Damage result is: " + damageResult);
-                        Debug.Log("HI!");
 
                         var hitStunFrame = attacker.GetHitStunFrame(damageResult, hitAttackID);
                         attacker.SetHitStun(hitStunFrame);
