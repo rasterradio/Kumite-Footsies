@@ -97,4 +97,4 @@ MonoBehaviour:
     actionID: 6e000000
   alwaysCancelable: 0
   audioClip: {fileID: 8300000, guid: 15f19933973c62f408011e11283da300, type: 3}
-  Stance: 2
+  Stance: 0

@@ -62,14 +62,6 @@ namespace Footsies
         WIN = 510,
     }
 
-    /*public enum CommonStanceInputID
-    {
-        //unnecessary?
-        NEUTRAL = 0,
-        UP = 1,
-        DOWN = 2,
-    }*/
-
     public enum CommonStanceID
     {
         MID = 0,
@@ -218,8 +210,8 @@ namespace Footsies
         {
             var isUp = IsUpInput(input[0]);
             var isDown = IsDownInput(input[0]);
-            //if (isInHitStun)
-            //    return;
+            if (isInHitStun)
+                return;
 
             if (isUp && isDown)
             {
@@ -237,7 +229,7 @@ namespace Footsies
             {
                 currentStanceID = (int)CommonStanceID.MID;
             }
-            Debug.Log(currentStanceID);
+            //Debug.Log(currentStanceID);
         }
 
         /// <summary>
@@ -245,7 +237,6 @@ namespace Footsies
         /// </summary>
         public void UpdateActionRequest()
         {
-            // If won then just request win animation
             if(hasWon)
             {
                 RequestAction((int)CommonActionID.WIN);
@@ -414,35 +405,32 @@ namespace Footsies
                     guardHealth = 0;
                 }
             }
+            Debug.Log("Guard health is " + attackData.guardHealthDamage);
             Debug.Log("Attacker stance is: " + attackData.stanceID);
             Debug.Log("Blocker stance is: " + currentStanceID);
-            //if (currentActionID == (int)CommonActionID.BACKWARD
-            //    || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
 
             if (attackData.stanceID == currentStanceID
+            //if (currentActionID == (int)CommonActionID.BACKWARD
                 || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
             {
-                //if current stance matches opponent attack stance)
                 if (isGuardBreak)
                 {
-                    Debug.Log("GUARD BREAK");
+                    //Debug.Log("GUARD BREAK");
                     SetCurrentAction(attackData.guardActionID);
                     reserveDamageActionID = (int)CommonActionID.GUARD_BREAK;
                     SoundManager.Instance.playFighterSE(fighterData.actions[reserveDamageActionID].audioClip, isFaceRight, position.x);
-                    //Debug.Log("GUARD BREAK");
                     return DamageResult.GuardBreak;
                 }
                 else
                 {
                     Debug.Log("GUARDED");
                     SetCurrentAction(attackData.guardActionID);
-                    //Debug.Log("GUARDED");
                     return DamageResult.Guard;
                 }
             }
             else
             {
-                Debug.Log("DAMAGE");
+                //Debug.Log("DAMAGE");
                 if (attackData.vitalHealthDamage > 0)
                 {
                     vitalHealth -= attackData.vitalHealthDamage;
@@ -451,7 +439,6 @@ namespace Footsies
                 }
                 
                 SetCurrentAction(attackData.damageActionID);
-                //Debug.Log("DAMAGE");
                 return DamageResult.Damage;
             }
         }
