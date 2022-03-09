@@ -237,7 +237,6 @@ namespace Footsies
                             fighter1.RequestWinAction();
                         }
                     }
-
                     break;
             }
         }
@@ -462,9 +461,6 @@ namespace Footsies
 
                     if (isHit)
                     {
-                        //Debug.Log("Attacker stance is: " + attacker.getAttackData(hitAttackID).stanceType);
-                        Debug.Log("Attacker name is: " + attacker.getAttackData(hitAttackID).attackName);
-                        //trying to figure out why the attacker stanceID for the move is not being set, or not being read properly
                         attacker.NotifyAttackHit(damaged, damagePos);
                         var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
 
@@ -479,24 +475,7 @@ namespace Footsies
                     {
                         damaged.NotifyInProximityGuardRange();
                     }
-                    else
-                    {
-                        //need a way to pass opponent ActionData to defending player to check block
-                        //Debug.Log(attacker.getAttackData(hitAttackID));
-                        //damaged.CanGuard(attacker.getAttackData(hitAttackID).stanceAttackID);
-                        //damaged.CanGuard(attacker.getStanceData(hitAttackID);
-                        //var attackerStance = attacker.getStanceData(hitAttackID);
-
-                        //var canGuard = damaged.CanGuard(attacker.getStanceData(hitAttackID);
-                        //damaged.StanceGuard(attacker.getStanceData(hitAttackID));
-
-                        /*var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
-                        Debug.Log(damageResult);
-                        damageHandler(damaged, damagePos, damageResult);*/
-                    }
                 }
-
-
             }
         }
 

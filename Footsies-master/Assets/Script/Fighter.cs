@@ -229,7 +229,6 @@ namespace Footsies
             {
                 currentStanceID = (int)CommonStanceID.MID;
             }
-            //Debug.Log(currentStanceID);
         }
 
         /// <summary>
@@ -398,16 +397,14 @@ namespace Footsies
             bool isGuardBreak = false;
             if (attackData.guardHealthDamage > 0)
             {
-                guardHealth -= attackData.guardHealthDamage;
+                //deal damage to guard health
+                /*guardHealth -= attackData.guardHealthDamage;
                 if (guardHealth < 0)
                 {
                     isGuardBreak = true;
                     guardHealth = 0;
-                }
+                }*/
             }
-            //Debug.Log("Guard health is " + attackData.guardHealthDamage);
-            //Debug.Log("Attacker stance is: " + (int)attackData.stanceType);
-            Debug.Log("Blocker stance is: " + currentStanceID);
 
             if ((int)attackData.stanceType == currentStanceID
             //if (currentActionID == (int)CommonActionID.BACKWARD
@@ -415,28 +412,35 @@ namespace Footsies
             {
                 if (isGuardBreak)
                 {
-                    //Debug.Log("GUARD BREAK");
                     SetCurrentAction(attackData.guardActionID);
                     reserveDamageActionID = (int)CommonActionID.GUARD_BREAK;
+
                     SoundManager.Instance.playFighterSE(fighterData.actions[reserveDamageActionID].audioClip, isFaceRight, position.x);
                     return DamageResult.GuardBreak;
                 }
                 else
                 {
-                    Debug.Log("GUARDED");
                     SetCurrentAction(attackData.guardActionID);
                     return DamageResult.Guard;
                 }
             }
             else
             {
-                //Debug.Log("DAMAGE");
-                if (attackData.vitalHealthDamage > 0)
+                //deal damage to guard health
+                guardHealth -= attackData.guardHealthDamage;
+                if (guardHealth < 0)
                 {
-                    vitalHealth -= attackData.vitalHealthDamage;
-                    if (vitalHealth <= 0)
-                        vitalHealth = 0;
+                    isGuardBreak = true;
+                    guardHealth = 0;
+
+                    if (attackData.vitalHealthDamage > 0)
+                    {
+                        vitalHealth -= attackData.vitalHealthDamage;
+                        if (vitalHealth <= 0)
+                            vitalHealth = 0;
+                    }
                 }
+                Debug.Log("Need to switch guard health for vital health, and properly KO players.");
                 
                 SetCurrentAction(attackData.damageActionID);
                 return DamageResult.Damage;
@@ -786,20 +790,6 @@ namespace Footsies
             fightPosRect.height = dataRect.height;
 
             return fightPosRect;
-        }
-
-        public bool CanGuard(int attackerStanceID)//(attacker's stanceID int)
-        {
-            //int attackerStanceid = 
-            if (fighterData.actions[currentActionID].Type == ActionType.Guard)
-                return true;
-
-            //if (currentActionID == (int)CommonActionID.BACKWARD //this is how Footsies handles it (back to block)
-            if (currentStanceID == attackerStanceID)
-                return true;
-
-            else
-                return false;
         }
     }
 }
