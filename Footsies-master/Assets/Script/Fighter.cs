@@ -394,8 +394,6 @@ namespace Footsies
 
         public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos)
         {
-            //Debug.Log(attackData.attackName);
-            //Debug.Log(attackData.stanceType);
             bool isGuardBreak = false;
             if (attackData.guardHealthDamage > 0)
             {
@@ -408,9 +406,8 @@ namespace Footsies
                 }*/
             }
 
-            if ((int)attackData.stanceType == currentStanceID
-            //if (currentActionID == (int)CommonActionID.BACKWARD
-                || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
+            if ((int)attackData.stanceType == currentStanceID)
+            //    || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
             {
                 if (isGuardBreak)
                 {
@@ -442,9 +439,11 @@ namespace Footsies
                             vitalHealth = 0;
                     }
                 }
-                Debug.Log("Need to switch guard health for vital health, and properly KO players.");
+                Debug.Log("Need to set damageID dynamiclly, to be set on the second hit of a combo (and for it to be called on ring out");
                 
                 SetCurrentAction(attackData.damageActionID);
+                //if attack was followed up, SetCurrentAction((int)CommonActionID.DAMAGE);
+                //else, SetCurrentAction((int)CommonActionID.DEAD);
                 return DamageResult.Damage;
             }
         }
