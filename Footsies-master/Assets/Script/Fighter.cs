@@ -89,7 +89,7 @@ namespace Footsies
 
         private FighterData fighterData;
 
-        public bool isDead { get { return vitalHealth <= 0; } }
+        public bool isDead { get { return guardHealth <= 0; } }
         public int vitalHealth { get; private set; }
         public int guardHealth { get; private set; }
 
@@ -394,8 +394,8 @@ namespace Footsies
 
         public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos)
         {
-            Debug.Log(attackData.attackName);
-            Debug.Log(attackData.stanceType);
+            //Debug.Log(attackData.attackName);
+            //Debug.Log(attackData.stanceType);
             bool isGuardBreak = false;
             if (attackData.guardHealthDamage > 0)
             {
