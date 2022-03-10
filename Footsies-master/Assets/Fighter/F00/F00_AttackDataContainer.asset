@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: F00_AttackDataContainer
   m_EditorClassIdentifier: Assembly-CSharp:Footsies:AttackDataContainer
   attackDataList:
-  - attackID: 1
+  - attackID: 2
     attackName: N_ATTACK
     damageActionID: 200
     guardActionID: 306
@@ -23,7 +23,7 @@ MonoBehaviour:
     hitStunFrame: 12
     guardStunFrame: 12
     guardBreakStunFrame: 30
-    stanceID: 0
+    stanceType: 0
   - attackID: 10
     attackName: N_SPECIAL
     damageActionID: 500
@@ -34,8 +34,8 @@ MonoBehaviour:
     hitStunFrame: 0
     guardStunFrame: 15
     guardBreakStunFrame: 30
-    stanceID: 0
-  - attackID: 2
+    stanceType: 0
+  - attackID: 4
     attackName: B_ATTACK
     damageActionID: 200
     guardActionID: 305
@@ -45,8 +45,8 @@ MonoBehaviour:
     hitStunFrame: 12
     guardStunFrame: 12
     guardBreakStunFrame: 30
-    stanceID: 0
-  - attackID: 11
+    stanceType: 0
+  - attackID: 3
     attackName: B_SPECIAL
     damageActionID: 500
     guardActionID: 301
@@ -56,19 +56,19 @@ MonoBehaviour:
     hitStunFrame: 0
     guardStunFrame: 15
     guardBreakStunFrame: 30
-    stanceID: 0
-  - attackID: 3
+    stanceType: 0
+  - attackID: 11
     attackName: H_PUNCH
     damageActionID: 500
     guardActionID: 301
     numberOfHit: 1
-    vitalHealthDamage: 1
+    vitalHealthDamage: 0
     guardHealthDamage: 1
     hitStunFrame: 0
     guardStunFrame: 15
     guardBreakStunFrame: 30
-    stanceID: 1
-  - attackID: 4
+    stanceType: 1
+  - attackID: 1
     attackName: L_PUNCH
     damageActionID: 200
     guardActionID: 305
@@ -78,4 +78,4 @@ MonoBehaviour:
     hitStunFrame: 12
     guardStunFrame: 12
     guardBreakStunFrame: 30
-    stanceID: 2
+    stanceType: 2

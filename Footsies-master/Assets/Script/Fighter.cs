@@ -394,6 +394,8 @@ namespace Footsies
 
         public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos)
         {
+            Debug.Log(attackData.attackName);
+            Debug.Log(attackData.stanceType);
             bool isGuardBreak = false;
             if (attackData.guardHealthDamage > 0)
             {
