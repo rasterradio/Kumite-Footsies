@@ -89,7 +89,8 @@ namespace Footsies
 
         private FighterData fighterData;
 
-        public bool isDead { get { return guardHealth <= 0; } }
+        //public bool isDead { get { return guardHealth <= 0 && vitalHealth <= 0; } }
+        public bool isDead { get { if (guardHealth <= 0 || vitalHealth <= 0) return false; return true; } } //need to return isDead when either guardHealth or vitalHealth = 0, set knockdown to true (should be a larger function)
         public int vitalHealth { get; private set; }
         public int guardHealth { get; private set; }
 
@@ -254,13 +255,19 @@ namespace Footsies
 
             // If there is any buffer action, set that to current action
             // Use for canceling normal to special attack
-            if (bufferActionID != -1 
+            /*if (bufferActionID != -1 
                 && canCancelAttack()
-                && currentHitStunFrame <= 0)
+                && currentHitStunFrame <= 0)*/
+            if (CanBuffer())
             {
                 SetCurrentAction(bufferActionID);
+                //SetCurrentAction((int)CommonActionID.DEAD);
                 bufferActionID = -1;
+                //if attack was followed up, SetCurrentAction((int)CommonActionID.DAMAGE);
+                //else, SetCurrentAction((int)CommonActionID.DEAD);
                 return;
+
+                //set attack to deal one vitality damage
             }
 
             var isForward = IsForwardInput(input[0]);
@@ -546,11 +553,13 @@ namespace Footsies
                     {
                         if (cancelData.execute)
                         {
+                            Debug.Log("Followup!");
                             bufferActionID = actionID;
                             return true;
                         }
                         else if (cancelData.buffer)
                         {
+                            //should this also be a followup attack?
                             bufferActionID = actionID;
                         }
                     }
@@ -587,6 +596,17 @@ namespace Footsies
                 return true;
 
             return false;
+        }
+        private bool CanBuffer()
+        {
+            if (bufferActionID != -1
+                && canCancelAttack()
+                && currentHitStunFrame <= 0)
+            {
+                return true;
+            }
+
+            else return false;
         }
 
         /// <summary>

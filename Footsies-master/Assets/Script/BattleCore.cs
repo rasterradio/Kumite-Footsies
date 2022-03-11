@@ -463,6 +463,9 @@ namespace Footsies
                     {
                         attacker.NotifyAttackHit(damaged, damagePos);
                         var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
+                        //check if the attacker canCancelAttack(), then pass that to damaged opponent to apply Dead animation and KO
+                        //need to change remove round system, just KO players after every followup attack/ring out/power attack
+                        //maybe keep vitality system behind guard system? and have power attacks, followups and ring outs deal one vitality damage
 
                         var hitStunFrame = attacker.GetHitStunFrame(damageResult, hitAttackID);
                         attacker.SetHitStun(hitStunFrame);

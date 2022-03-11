@@ -62,7 +62,7 @@ MonoBehaviour:
     damageActionID: 500
     guardActionID: 301
     numberOfHit: 1
-    vitalHealthDamage: 0
+    vitalHealthDamage: 1
     guardHealthDamage: 1
     hitStunFrame: 0
     guardStunFrame: 15
