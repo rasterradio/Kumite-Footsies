@@ -88,9 +88,7 @@ namespace Footsies
         public Pushbox pushbox;
 
         private FighterData fighterData;
-
-        //public bool isDead { get { return guardHealth <= 0 && vitalHealth <= 0; } }
-        public bool isDead { get { if (guardHealth <= 0 || vitalHealth <= 0) return false; return true; } } //need to return isDead when either guardHealth or vitalHealth = 0, set knockdown to true (should be a larger function)
+        public bool isDead {  get { return isKnockedDown(); } }
         public int vitalHealth { get; private set; }
         public int guardHealth { get; private set; }
 
@@ -207,31 +205,6 @@ namespace Footsies
             RequestAction((int)CommonActionID.STAND);
         }
 
-        public void UpdateStance()
-        {
-            var isUp = IsUpInput(input[0]);
-            var isDown = IsDownInput(input[0]);
-            if (isInHitStun)
-                return;
-
-            if (isUp && isDown)
-            {
-                currentStanceID = (int)CommonStanceID.MID;
-            }
-            else if (isUp)
-            {
-                currentStanceID = (int)CommonStanceID.HIGH;
-            }
-            else if (isDown)
-            {
-                currentStanceID = (int)CommonStanceID.LOW;
-            }
-            else
-            {
-                currentStanceID = (int)CommonStanceID.MID;
-            }
-        }
-
         /// <summary>
         /// Update action request
         /// </summary>
@@ -328,6 +301,38 @@ namespace Footsies
             }
 
             isReserveProximityGuard = false;
+        }
+
+        public void UpdateStance()
+        {
+            if (currentActionID == (int)CommonActionID.DASH_FORWARD || currentActionID == (int)CommonActionID.DASH_BACKWARD)
+            {
+                Debug.Log("Need to get around this");
+                currentStanceID = -1;
+            }
+            else currentStanceID = 0;
+
+            var isUp = IsUpInput(input[0]);
+            var isDown = IsDownInput(input[0]);
+            if (isInHitStun)
+                return;
+
+            if (isUp && isDown)
+            {
+                currentStanceID = (int)CommonStanceID.MID;
+            }
+            else if (isUp)
+            {
+                currentStanceID = (int)CommonStanceID.HIGH;
+            }
+            else if (isDown)
+            {
+                currentStanceID = (int)CommonStanceID.LOW;
+            }
+            else
+            {
+                currentStanceID = (int)CommonStanceID.MID;
+            }
         }
 
         /// <summary>
@@ -447,10 +452,16 @@ namespace Footsies
                     }
                 }
                 Debug.Log("Need to set damageID dynamiclly, to be set on the second hit of a combo (and for it to be called on ring out");
-                
-                SetCurrentAction(attackData.damageActionID);
-                //if attack was followed up, SetCurrentAction((int)CommonActionID.DAMAGE);
-                //else, SetCurrentAction((int)CommonActionID.DEAD);
+
+                if (CanBeKnockedDown() || attackData.isPowerAttack)
+                {
+                    SetCurrentAction((int)CommonActionID.DEAD);
+                }
+                else
+                {
+                    SetCurrentAction(attackData.damageActionID);
+                }
+
                 return DamageResult.Damage;
             }
         }
@@ -519,6 +530,26 @@ namespace Footsies
         public void RequestWinAction()
         {
             hasWon = true;
+        }
+
+        public bool CanBeKnockedDown()
+        {
+            if (currentActionID == (int)CommonActionID.DASH_FORWARD || currentActionID == (int)CommonActionID.DASH_BACKWARD)
+                    return true;
+            return false;
+        }
+
+        private bool isKnockedDown()
+        {
+            if (guardHealth <= 0 || vitalHealth <= 0)
+            {
+                SetCurrentAction((int)CommonActionID.DEAD);
+                return true;
+            }
+            //or if hit by a followup attack
+            //or if hit by a circular attack
+            //or if ringed out
+            else return false;
         }
 
         /// <summary>

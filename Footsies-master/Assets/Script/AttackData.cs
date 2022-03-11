@@ -23,7 +23,7 @@ namespace Footsies
         public int guardBreakStunFrame;
         public StanceType stanceType;
 
-
+        public bool isPowerAttack;
     }
 
     [System.Serializable]
