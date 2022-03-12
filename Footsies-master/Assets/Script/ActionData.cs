@@ -84,6 +84,7 @@ namespace Footsies
         public CancelData[] cancels;
         public bool alwaysCancelable;
         public AudioClip audioClip;
+        public bool isInStance;
 
         public MotionFrameData GetMotionData(int frame)
         {

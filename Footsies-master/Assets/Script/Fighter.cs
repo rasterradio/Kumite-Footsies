@@ -64,6 +64,7 @@ namespace Footsies
 
     public enum CommonStanceID
     {
+        NOGUARD = -1,
         MID = 0,
         HIGH = 1,
         LOW = 2,
@@ -305,17 +306,16 @@ namespace Footsies
 
         public void UpdateStance()
         {
-            if (currentActionID == (int)CommonActionID.DASH_FORWARD || currentActionID == (int)CommonActionID.DASH_BACKWARD)
+            if (isInHitStun
+                || fighterData.actions[currentActionID].isInStance != true)
+                //can players after getting hit, match stance to block next hit of the combo? 
             {
-                Debug.Log("Need to get around this");
-                currentStanceID = -1;
+                currentStanceID = (int)CommonStanceID.NOGUARD;
+                return;
             }
-            else currentStanceID = 0;
 
             var isUp = IsUpInput(input[0]);
             var isDown = IsDownInput(input[0]);
-            if (isInHitStun)
-                return;
 
             if (isUp && isDown)
             {
