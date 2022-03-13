@@ -547,7 +547,6 @@ namespace Footsies
                 return true;
             }
             //or if hit by a followup attack
-            //or if hit by a circular attack
             //or if ringed out
             else return false;
         }

@@ -421,8 +421,19 @@ namespace Footsies
                 foreach (var damaged in _fighters)
                 {
                     if (attacker == damaged)
-                        continue;
-                    
+                    continue;
+
+                    foreach (var attHurtbox in attacker.hurtboxes)
+                    {
+                        foreach (var defHurtbox in damaged.hurtboxes)
+                        {
+                            if (defHurtbox.Overlaps(attHurtbox))
+                            {
+                                Debug.Log("Trade!");
+                            }
+                        }
+                    }
+
                     foreach (var hitbox in attacker.hitboxes)
                     {
                         // continue if attack already hit
@@ -461,6 +472,9 @@ namespace Footsies
 
                     if (isHit)
                     {
+                        //need to include trades
+                        //(if player was just hit? changed notifydamaged to trade condition (both players get hit but neither take damage)
+                        //do a check if hurtbox collides with the opponent's hurtbox
                         attacker.NotifyAttackHit(damaged, damagePos);
                         var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
                         //check if the attacker canCancelAttack(), then pass that to damaged opponent to apply Dead animation and KO
