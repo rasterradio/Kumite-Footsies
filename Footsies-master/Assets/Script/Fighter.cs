@@ -435,6 +435,7 @@ namespace Footsies
                     return DamageResult.Guard;
                 }
             }
+            //if you are dealt damage but your attack still deals damage to the opponent, it's a trade
             else
             {
                 //deal damage to guard health
@@ -452,6 +453,8 @@ namespace Footsies
                     }
                 }
                 Debug.Log("Need to set damageID dynamiclly, to be set on the second hit of a combo (and for it to be called on ring out");
+                Debug.Log("Next step: having followups knock down");
+                //then, letting any normal followup with another normal
 
                 if (CanBeKnockedDown() || attackData.isPowerAttack)
                 {

@@ -429,7 +429,9 @@ namespace Footsies
                         {
                             if (defHurtbox.Overlaps(attHurtbox))
                             {
-                                Debug.Log("Trade!");
+                                //Debug.Log("Trade!");
+                                //should they get pushed back a greater amount, should they play hit anims or guard anims, should I treat it as a separate reaction to getting hit so I can make it more custom, etc
+                                //maybe something to come back to later
                             }
                         }
                     }
@@ -472,9 +474,6 @@ namespace Footsies
 
                     if (isHit)
                     {
-                        //need to include trades
-                        //(if player was just hit? changed notifydamaged to trade condition (both players get hit but neither take damage)
-                        //do a check if hurtbox collides with the opponent's hurtbox
                         attacker.NotifyAttackHit(damaged, damagePos);
                         var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
                         //check if the attacker canCancelAttack(), then pass that to damaged opponent to apply Dead animation and KO
