@@ -76,6 +76,7 @@ namespace Footsies
         Guard ,
         GuardBreak,
         Counter,
+        Trade,
     }
   
     public class Fighter
@@ -404,9 +405,17 @@ namespace Footsies
             currentActionHitCount++;
         }
 
-        public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos)
+        public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos, bool attackTrade)
         {
             bool isGuardBreak = false;
+
+            if (attackTrade)
+            {
+                //play trade sound
+                SetCurrentAction((int)CommonActionID.GUARD_STAND); //switch this to GUARD_TRADE (guard with extra pushback)
+                return DamageResult.Trade;
+            }
+
             if (attackData.guardHealthDamage > 0)
             {
                 //deal damage to guard health
@@ -435,7 +444,7 @@ namespace Footsies
                     return DamageResult.Guard;
                 }
             }
-            //if you are dealt damage but your attack still deals damage to the opponent, it's a trade
+
             else
             {
                 //deal damage to guard health
@@ -587,6 +596,7 @@ namespace Footsies
                         if (cancelData.execute)
                         {
                             Debug.Log("Followup!");
+                            //knockdown here rather than on the move property
                             bufferActionID = actionID;
                             return true;
                         }

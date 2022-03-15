@@ -24,6 +24,7 @@ MonoBehaviour:
     guardStunFrame: 12
     guardBreakStunFrame: 30
     stanceType: 0
+    isPowerAttack: 0
   - attackID: 10
     attackName: N_SPECIAL
     damageActionID: 500
@@ -35,6 +36,7 @@ MonoBehaviour:
     guardStunFrame: 15
     guardBreakStunFrame: 30
     stanceType: 0
+    isPowerAttack: 0
   - attackID: 4
     attackName: B_ATTACK
     damageActionID: 200
@@ -46,6 +48,7 @@ MonoBehaviour:
     guardStunFrame: 12
     guardBreakStunFrame: 30
     stanceType: 0
+    isPowerAttack: 0
   - attackID: 3
     attackName: B_SPECIAL
     damageActionID: 500
@@ -57,17 +60,19 @@ MonoBehaviour:
     guardStunFrame: 15
     guardBreakStunFrame: 30
     stanceType: 0
+    isPowerAttack: 0
   - attackID: 11
     attackName: H_PUNCH
     damageActionID: 500
     guardActionID: 301
     numberOfHit: 1
     vitalHealthDamage: 1
-    guardHealthDamage: 1
+    guardHealthDamage: 2
     hitStunFrame: 0
     guardStunFrame: 15
     guardBreakStunFrame: 30
     stanceType: 1
+    isPowerAttack: 0
   - attackID: 1
     attackName: L_PUNCH
     damageActionID: 200
@@ -79,3 +84,4 @@ MonoBehaviour:
     guardStunFrame: 12
     guardBreakStunFrame: 30
     stanceType: 2
+    isPowerAttack: 0

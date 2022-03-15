@@ -27,6 +27,9 @@ namespace Footsies
         [SerializeField]
         private float _battleAreaMaxHeight = 2f;
         public float battleAreaMaxHeight { get { return _battleAreaMaxHeight; } }
+        [SerializeField]
+        private float _ringOutHitStun = 5f;
+        public float ringOutHitStun { get { return _ringOutHitStun; } }
 
         [SerializeField]
         private GameObject roundUI;
@@ -96,15 +99,15 @@ namespace Footsies
             _fighters.Add(fighter1);
             _fighters.Add(fighter2);
 
-            if(roundUI != null)
+            if (roundUI != null)
             {
                 roundUIAnimator = roundUI.GetComponent<Animator>();
             }
         }
-        
+
         void FixedUpdate()
         {
-            switch(_roundState)
+            switch (_roundState)
             {
                 case RoundStateType.Stop:
 
@@ -130,17 +133,17 @@ namespace Footsies
                     break;
                 case RoundStateType.Fight:
 
-                    if(CheckUpdateDebugPause())
+                    if (CheckUpdateDebugPause())
                     {
                         break;
                     }
 
                     frameCount++;
-                    
+
                     UpdateFightState();
 
                     var deadFighter = _fighters.Find((f) => f.isDead);
-                    if(deadFighter != null)
+                    if (deadFighter != null)
                     {
                         ChangeRoundState(RoundStateType.KO);
                     }
@@ -177,7 +180,7 @@ namespace Footsies
             {
                 case RoundStateType.Stop:
 
-                    if(fighter1RoundWon >= maxRoundWon
+                    if (fighter1RoundWon >= maxRoundWon
                         || fighter2RoundWon >= maxRoundWon)
                     {
                         GameManager.Instance.LoadTitleScene();
@@ -203,7 +206,7 @@ namespace Footsies
                     frameCount = -1;
 
                     currentRecordingInputIndex = 0;
-                    
+
                     break;
                 case RoundStateType.KO:
 
@@ -299,7 +302,7 @@ namespace Footsies
 
         InputData GetP1InputData()
         {
-            if(isReplayingLastRoundInput)
+            if (isReplayingLastRoundInput)
             {
                 return lastRoundP1Input[currentReplayingInputIndex];
             }
@@ -318,7 +321,7 @@ namespace Footsies
             if (debugP1Attack)
                 p1Input.input |= (int)InputDefine.Attack;
             if (debugP1Guard)
-                p1Input.input |= (int)InputDefine.Left;
+                p1Input.input |= (int)InputDefine.Left; //need to change this to always match stance
 
             return p1Input;
         }
@@ -370,7 +373,7 @@ namespace Footsies
 
             return false;
         }
-        
+
         void UpdatePushCharacterVsCharacter()
         {
             var rect1 = fighter1.pushbox.rect;
@@ -409,37 +412,35 @@ namespace Footsies
             });
         }
 
+        void UpdateStage()
+        {
+            //if player touches ground tagged as out of ring
+            /*var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
+            damaged.SetHitStun(ringOutHitStun);
+            damaged.SetSpriteShakeFrame(ringOutHitStun / 3);
+
+            damageHandler(damaged, damagePos, damageResult);*/
+        }
+
         void UpdateHitboxHurtboxCollision()
         {
-            foreach(var attacker in _fighters)
+            foreach (var attacker in _fighters)
             {
                 Vector2 damagePos = Vector2.zero;
                 bool isHit = false;
                 bool isProximity = false;
+                bool attackTrade = false;
                 int hitAttackID = 0;
 
                 foreach (var damaged in _fighters)
                 {
                     if (attacker == damaged)
-                    continue;
-
-                    foreach (var attHurtbox in attacker.hurtboxes)
-                    {
-                        foreach (var defHurtbox in damaged.hurtboxes)
-                        {
-                            if (defHurtbox.Overlaps(attHurtbox))
-                            {
-                                //Debug.Log("Trade!");
-                                //should they get pushed back a greater amount, should they play hit anims or guard anims, should I treat it as a separate reaction to getting hit so I can make it more custom, etc
-                                //maybe something to come back to later
-                            }
-                        }
-                    }
+                        continue;
 
                     foreach (var hitbox in attacker.hitboxes)
                     {
                         // continue if attack already hit
-                        if(!attacker.CanAttackHit(hitbox.attackID))
+                        if (!attacker.CanAttackHit(hitbox.attackID))
                         {
                             continue;
                         }
@@ -454,17 +455,26 @@ namespace Footsies
                                 }
                                 else
                                 {
-                                    isHit = true;
-                                    hitAttackID = hitbox.attackID;
-                                    float x1 = Mathf.Min(hitbox.xMax, hurtbox.xMax);
-                                    float x2 = Mathf.Max(hitbox.xMin, hurtbox.xMin);
-                                    float y1 = Mathf.Min(hitbox.yMax, hurtbox.yMax);
-                                    float y2 = Mathf.Max(hitbox.yMin, hurtbox.yMin);
-                                    damagePos.x = (x1 + x2) / 2;
-                                    damagePos.y = (y1 + y2) / 2;
-                                    break;
+                                    //check for hit trade
+                                    foreach (var attHurtbox in attacker.hurtboxes)
+                                    {
+                                        hitAttackID = hitbox.attackID;
+                                        if (hurtbox.Overlaps(attHurtbox))
+                                        {
+                                            Debug.Log("Trade!");
+                                            attackTrade = true;
+                                        }
+                                        isHit = true;
+                                        float x1 = Mathf.Min(hitbox.xMax, hurtbox.xMax);
+                                        float x2 = Mathf.Max(hitbox.xMin, hurtbox.xMin);
+                                        float y1 = Mathf.Min(hitbox.yMax, hurtbox.yMax);
+                                        float y2 = Mathf.Max(hitbox.yMin, hurtbox.yMin);
+                                        damagePos.x = (x1 + x2) / 2;
+                                        damagePos.y = (y1 + y2) / 2;
+                                        break;
+                                    }
                                 }
-                                
+
                             }
                         }
 
@@ -475,9 +485,9 @@ namespace Footsies
                     if (isHit)
                     {
                         attacker.NotifyAttackHit(damaged, damagePos);
-                        var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
+                        var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos, attackTrade);
                         //check if the attacker canCancelAttack(), then pass that to damaged opponent to apply Dead animation and KO
-                        //need to change remove round system, just KO players after every followup attack/ring out/power attack
+                        //need to remove round system, just KO players after every followup attack/ring out/power attack
                         //maybe keep vitality system behind guard system? and have power attacks, followups and ring outs deal one vitality damage
 
                         var hitStunFrame = attacker.GetHitStunFrame(damageResult, hitAttackID);
@@ -513,13 +523,13 @@ namespace Footsies
 
         void CopyLastRoundInput()
         {
-            for(int i = 0; i < currentRecordingInputIndex; i++)
+            for (int i = 0; i < currentRecordingInputIndex; i++)
             {
                 lastRoundP1Input[i] = recordingP1Input[i].ShallowCopy();
                 lastRoundP2Input[i] = recordingP2Input[i].ShallowCopy();
             }
             lastRoundMaxRecordingInput = currentRecordingInputIndex;
-            
+
             isReplayingLastRoundInput = false;
             currentReplayingInputIndex = 0;
         }
