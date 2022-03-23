@@ -439,31 +439,35 @@ namespace Footsies
 
                     foreach (var hitbox in attacker.hitboxes)
                     {
-                        // continue if attack already hit
+                        // continue if attack is in the process of hitting
                         if (!attacker.CanAttackHit(hitbox.attackID))
-                        {
                             continue;
-                        }
 
                         foreach (var hurtbox in damaged.hurtboxes)
                         {
                             if (hitbox.Overlaps(hurtbox))
                             {
                                 if (hitbox.proximity)
-                                {
                                     isProximity = true;
-                                }
                                 else
                                 {
                                     //check for hit trade
                                     foreach (var attHurtbox in attacker.hurtboxes)
                                     {
-                                        hitAttackID = hitbox.attackID;
                                         if (hurtbox.Overlaps(attHurtbox))
                                         {
-                                            Debug.Log("Trade!");
-                                            attackTrade = true;
+                                            foreach (var defHitBox in damaged.hitboxes)
+                                            {
+                                                if (defHitBox.Overlaps(hitbox))
+                                                {
+                                                    Debug.Log("Trade!");
+                                                    attackTrade = true; //technically a trade, but every defending move has a hurtbox. can press attack during block to switch to count as trade (basically pushblocking!)
+                                                }
+                                            }
                                         }
+                                    }
+
+                                        hitAttackID = hitbox.attackID;
                                         isHit = true;
                                         float x1 = Mathf.Min(hitbox.xMax, hurtbox.xMax);
                                         float x2 = Mathf.Max(hitbox.xMin, hurtbox.xMin);
@@ -472,7 +476,6 @@ namespace Footsies
                                         damagePos.x = (x1 + x2) / 2;
                                         damagePos.y = (y1 + y2) / 2;
                                         break;
-                                    }
                                 }
 
                             }

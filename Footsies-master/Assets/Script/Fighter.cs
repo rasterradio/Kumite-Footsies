@@ -56,6 +56,7 @@ namespace Footsies
         GUARD_M = 301,
         GUARD_STAND = 305,
         GUARD_CROUCH = 306,
+        GUARD_TRADE = 307,
         GUARD_BREAK = 310,
         GUARD_PROXIMITY = 350,
         DEAD = 500,
@@ -72,11 +73,9 @@ namespace Footsies
 
     public enum DamageResult
     {
-        Damage = 1,
+        Damage,
         Guard ,
         GuardBreak,
-        Counter,
-        Trade,
     }
   
     public class Fighter
@@ -412,8 +411,8 @@ namespace Footsies
             if (attackTrade)
             {
                 //play trade sound
-                SetCurrentAction((int)CommonActionID.GUARD_STAND); //switch this to GUARD_TRADE (guard with extra pushback)
-                return DamageResult.Trade;
+                SetCurrentAction((int)CommonActionID.GUARD_TRADE);
+                return DamageResult.Guard;
             }
 
             if (attackData.guardHealthDamage > 0)
@@ -462,7 +461,7 @@ namespace Footsies
                     }
                 }
                 Debug.Log("Need to set damageID dynamiclly, to be set on the second hit of a combo (and for it to be called on ring out");
-                Debug.Log("Next step: having followups knock down");
+                //Next step: having followups knock down
                 //then, letting any normal followup with another normal
 
                 if (CanBeKnockedDown() || attackData.isPowerAttack)
