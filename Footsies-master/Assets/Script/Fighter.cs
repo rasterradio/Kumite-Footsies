@@ -399,9 +399,15 @@ namespace Footsies
             pushbox.rect.y += y;
         }
 
-        public void NotifyAttackHit(Fighter damagedFighter, Vector2 damagePos)
+        public void NotifyAttackHit(Fighter damagedFighter, Vector2 damagePos, bool attackTrade)
         {
             currentActionHitCount++;
+            
+            if (attackTrade)
+            {
+                //play trade sound
+                SetCurrentAction((int)CommonActionID.GUARD_TRADE);
+            }
         }
 
         public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos, bool attackTrade)

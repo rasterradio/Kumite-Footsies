@@ -439,7 +439,6 @@ namespace Footsies
 
                     foreach (var hitbox in attacker.hitboxes)
                     {
-                        // continue if attack is in the process of hitting
                         if (!attacker.CanAttackHit(hitbox.attackID))
                             continue;
 
@@ -456,28 +455,25 @@ namespace Footsies
                                     {
                                         if (hurtbox.Overlaps(attHurtbox))
                                         {
-                                            Debug.Log("Trade!");
-                                            attackTrade = true;
-                                            /*foreach (var defHitBox in damaged.hitboxes)
+                                            foreach (var defHitBox in damaged.hitboxes)
                                             {
                                                 if (defHitBox.Overlaps(hitbox))
                                                 {
-                                                    Debug.Log("Trade!");
-                                                    attackTrade = true; //technically a trade, but every defending move has a hurtbox. can press attack during block to switch to count as trade (basically pushblocking!)
+                                                    attackTrade = true;
                                                 }
-                                            }*/
+                                            }
                                         }
                                     }
 
-                                        hitAttackID = hitbox.attackID;
-                                        isHit = true;
-                                        float x1 = Mathf.Min(hitbox.xMax, hurtbox.xMax);
-                                        float x2 = Mathf.Max(hitbox.xMin, hurtbox.xMin);
-                                        float y1 = Mathf.Min(hitbox.yMax, hurtbox.yMax);
-                                        float y2 = Mathf.Max(hitbox.yMin, hurtbox.yMin);
-                                        damagePos.x = (x1 + x2) / 2;
-                                        damagePos.y = (y1 + y2) / 2;
-                                        break;
+                                    hitAttackID = hitbox.attackID;
+                                    isHit = true;
+                                    float x1 = Mathf.Min(hitbox.xMax, hurtbox.xMax);
+                                    float x2 = Mathf.Max(hitbox.xMin, hurtbox.xMin);
+                                    float y1 = Mathf.Min(hitbox.yMax, hurtbox.yMax);
+                                    float y2 = Mathf.Max(hitbox.yMin, hurtbox.yMin);
+                                    damagePos.x = (x1 + x2) / 2;
+                                    damagePos.y = (y1 + y2) / 2;
+                                    break;
                                 }
 
                             }
@@ -489,7 +485,7 @@ namespace Footsies
 
                     if (isHit)
                     {
-                        attacker.NotifyAttackHit(damaged, damagePos);
+                        attacker.NotifyAttackHit(damaged, damagePos, attackTrade);
                         var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos, attackTrade);
                         //check if the attacker canCancelAttack(), then pass that to damaged opponent to apply Dead animation and KO
                         //need to remove round system, just KO players after every followup attack/ring out/power attack
