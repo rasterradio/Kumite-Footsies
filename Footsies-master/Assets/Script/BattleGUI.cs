@@ -108,6 +108,16 @@ namespace Footsies
                 debugTextStyle.alignment = TextAnchor.UpperCenter;
                 GUI.Label(labelRect, "F1=Pause/Resume, F2=Frame Step, F12=Debug Draw", debugTextStyle);
 
+                labelRect.y += Screen.height * 0.02f;
+                GUI.color = Color.red;
+                GUI.Label(labelRect, "Hitbox ");
+                labelRect.x += Screen.width * 0.1f;
+                GUI.color = Color.yellow;
+                GUI.Label(labelRect, "Hurtbox");
+                labelRect.x += Screen.width * 0.1f;
+                GUI.color = Color.blue;
+                GUI.Label(labelRect, "Pushbox");
+
                 //DrawBox(new Rect(battleAreaTopLeftPoint.x,
                 //    battleAreaTopLeftPoint.y,
                 //    battleAreaBottomRightPoint.x - battleAreaTopLeftPoint.x,

@@ -456,14 +456,16 @@ namespace Footsies
                                     {
                                         if (hurtbox.Overlaps(attHurtbox))
                                         {
-                                            foreach (var defHitBox in damaged.hitboxes)
+                                            Debug.Log("Trade!");
+                                            attackTrade = true;
+                                            /*foreach (var defHitBox in damaged.hitboxes)
                                             {
                                                 if (defHitBox.Overlaps(hitbox))
                                                 {
                                                     Debug.Log("Trade!");
                                                     attackTrade = true; //technically a trade, but every defending move has a hurtbox. can press attack during block to switch to count as trade (basically pushblocking!)
                                                 }
-                                            }
+                                            }*/
                                         }
                                     }
 
