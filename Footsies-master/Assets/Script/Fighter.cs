@@ -405,7 +405,6 @@ namespace Footsies
             
             if (attackTrade)
             {
-                //play trade sound
                 SetCurrentAction((int)CommonActionID.GUARD_TRADE);
             }
         }
@@ -481,6 +480,12 @@ namespace Footsies
 
                 return DamageResult.Damage;
             }
+        }
+
+        public void RingOutNotifyDamage(int ringOutDamage)
+        {
+            SetCurrentAction((int)CommonActionID.DEAD);
+            guardHealth -= ringOutDamage;
         }
 
         public void NotifyInProximityGuardRange()

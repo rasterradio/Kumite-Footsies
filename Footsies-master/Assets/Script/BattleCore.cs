@@ -28,8 +28,11 @@ namespace Footsies
         private float _battleAreaMaxHeight = 2f;
         public float battleAreaMaxHeight { get { return _battleAreaMaxHeight; } }
         [SerializeField]
-        private float _ringOutHitStun = 5f;
-        public float ringOutHitStun { get { return _ringOutHitStun; } }
+        private int _ringOutHitStun = 10;
+        public int ringOutHitStun { get { return _ringOutHitStun; } }
+        [SerializeField]
+        private int _ringOutDamage = 1;
+        public int ringOutDamage { get { return _ringOutDamage; } }
 
         [SerializeField]
         private GameObject roundUI;
@@ -404,22 +407,27 @@ namespace Footsies
                 if (f.pushbox.xMin < stageMinX)
                 {
                     f.ApplyPositionChange(stageMinX - f.pushbox.xMin, f.position.y);
+
+                    CalculateStageDamage(f, f.pushbox.xMin);
                 }
                 else if (f.pushbox.xMax > stageMaxX)
                 {
                     f.ApplyPositionChange(stageMaxX - f.pushbox.xMax, f.position.y);
+
+                    CalculateStageDamage(f, f.pushbox.xMax);
                 }
             });
         }
 
-        void UpdateStage()
+        void CalculateStageDamage(Fighter fighter, float pushboxX)
         {
-            //if player touches ground tagged as out of ring
-            /*var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos);
-            damaged.SetHitStun(ringOutHitStun);
-            damaged.SetSpriteShakeFrame(ringOutHitStun / 3);
+            Vector2 damagePos = Vector2.zero;
+            damagePos.x = pushboxX;
+            fighter.SetHitStun(ringOutHitStun);
+            fighter.SetSpriteShakeFrame(ringOutHitStun / 3);
 
-            damageHandler(damaged, damagePos, damageResult);*/
+            fighter.RingOutNotifyDamage(ringOutDamage);
+            damageHandler(fighter, damagePos, DamageResult.Damage);
         }
 
         void UpdateHitboxHurtboxCollision()
@@ -544,21 +552,15 @@ namespace Footsies
         bool CheckUpdateDebugPause()
         {
             if (Input.GetKeyDown(KeyCode.F1))
-            {
                 isDebugPause = !isDebugPause;
-            }
 
             if (isDebugPause)
             {
                 // press f2 during debug pause to 
                 if (Input.GetKeyDown(KeyCode.F2))
-                {
                     return false;
-                }
                 else
-                {
                     return true;
-                }
             }
 
             return false;
