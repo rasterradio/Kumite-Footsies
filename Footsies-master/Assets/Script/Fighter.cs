@@ -116,6 +116,7 @@ namespace Footsies
 
         private int bufferActionID = -1;
         private int reserveDamageActionID = -1;
+        private bool followupMove = false;
 
         public int spriteShakePosition { get; private set; }
         private int maxSpriteShakeFrame = 6;
@@ -150,6 +151,8 @@ namespace Footsies
         /// </summary>
         public void IncrementActionFrame()
         {
+            Debug.Log(followupMove);
+
             // Decrease sprite shake count and swap +/- (used by BattleGUI for fighter sprite position)
             if (Mathf.Abs(spriteShakePosition) > 0)
             {
@@ -195,7 +198,6 @@ namespace Footsies
             inputDown[0] = (input[0] ^ input[1]) & input[0];
             inputUp[0] = (input[0] ^ input[1]) & ~input[0];
             //Debug.Log(System.Convert.ToString(input[0], 2) + " " + System.Convert.ToString(inputDown[0], 2) + " " + System.Convert.ToString(inputUp[0], 2));
-
         }
 
         /// <summary>
@@ -484,8 +486,8 @@ namespace Footsies
 
         public void RingOutNotifyDamage(int ringOutDamage)
         {
-            SetCurrentAction((int)CommonActionID.DEAD);
-            guardHealth -= ringOutDamage;
+                SetCurrentAction((int)CommonActionID.DEAD);
+                guardHealth -= ringOutDamage;
         }
 
         public void NotifyInProximityGuardRange()
@@ -563,13 +565,11 @@ namespace Footsies
 
         private bool isKnockedDown()
         {
-            if (guardHealth <= 0 || vitalHealth <= 0)
+            if (guardHealth <= 0 || vitalHealth <= 0 || followupMove)
             {
                 SetCurrentAction((int)CommonActionID.DEAD);
                 return true;
             }
-            //or if hit by a followup attack
-            //or if ringed out
             else return false;
         }
 
@@ -606,16 +606,18 @@ namespace Footsies
                         if (cancelData.execute)
                         {
                             Debug.Log("Followup!");
+                            followupMove = true;
                             //knockdown here rather than on the move property
                             bufferActionID = actionID;
                             return true;
                         }
                         else if (cancelData.buffer)
                         {
-                            //should this also be a followup attack?
                             bufferActionID = actionID;
+                            //followupMove = false;
                         }
                     }
+                    else followupMove = false;
                 }
             }
 

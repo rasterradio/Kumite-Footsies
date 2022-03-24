@@ -406,13 +406,13 @@ namespace Footsies
             {
                 if (f.pushbox.xMin < stageMinX)
                 {
-                    f.ApplyPositionChange(stageMinX - f.pushbox.xMin, f.position.y);
+                    //f.ApplyPositionChange(stageMinX - f.pushbox.xMin, f.position.y);
 
                     CalculateStageDamage(f, f.pushbox.xMin);
                 }
                 else if (f.pushbox.xMax > stageMaxX)
                 {
-                    f.ApplyPositionChange(stageMaxX - f.pushbox.xMax, f.position.y);
+                    //f.ApplyPositionChange(stageMaxX - f.pushbox.xMax, f.position.y);
 
                     CalculateStageDamage(f, f.pushbox.xMax);
                 }
@@ -421,13 +421,16 @@ namespace Footsies
 
         void CalculateStageDamage(Fighter fighter, float pushboxX)
         {
-            Vector2 damagePos = Vector2.zero;
-            damagePos.x = pushboxX;
-            fighter.SetHitStun(ringOutHitStun);
-            fighter.SetSpriteShakeFrame(ringOutHitStun / 3);
+            if (fighter.currentActionID != (int)CommonActionID.DEAD)
+            {
+                Vector2 damagePos = Vector2.zero;
+                damagePos.x = pushboxX;
+                fighter.SetHitStun(ringOutHitStun);
+                fighter.SetSpriteShakeFrame(ringOutHitStun / 3);
 
-            fighter.RingOutNotifyDamage(ringOutDamage);
-            damageHandler(fighter, damagePos, DamageResult.Damage);
+                fighter.RingOutNotifyDamage(ringOutDamage);
+                damageHandler(fighter, damagePos, DamageResult.Damage);
+            }
         }
 
         void UpdateHitboxHurtboxCollision()
