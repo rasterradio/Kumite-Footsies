@@ -151,8 +151,6 @@ namespace Footsies
         /// </summary>
         public void IncrementActionFrame()
         {
-            Debug.Log(followupMove);
-
             // Decrease sprite shake count and swap +/- (used by BattleGUI for fighter sprite position)
             if (Mathf.Abs(spriteShakePosition) > 0)
             {
@@ -219,7 +217,6 @@ namespace Footsies
                 return;
             }
 
-            // If there is any reserve damage action, set that to current action
             // Use for playing damage motion after hit stun ended (only use this for guard break currently)
             if (reserveDamageActionID != -1
                 && currentHitStunFrame <= 0)
@@ -229,21 +226,13 @@ namespace Footsies
                 return;
             }
 
-            // If there is any buffer action, set that to current action
-            // Use for canceling normal to special attack
-            /*if (bufferActionID != -1 
-                && canCancelAttack()
-                && currentHitStunFrame <= 0)*/
             if (CanBuffer())
             {
+                Debug.Log("BUFFER");
                 SetCurrentAction(bufferActionID);
                 //SetCurrentAction((int)CommonActionID.DEAD);
                 bufferActionID = -1;
-                //if attack was followed up, SetCurrentAction((int)CommonActionID.DAMAGE);
-                //else, SetCurrentAction((int)CommonActionID.DEAD);
                 return;
-
-                //set attack to deal one vitality damage
             }
 
             var isForward = IsForwardInput(input[0]);
@@ -411,7 +400,7 @@ namespace Footsies
             }
         }
 
-        public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos, bool attackTrade)
+        public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos, bool attackTrade, bool attackBuffered)
         {
             bool isGuardBreak = false;
 
@@ -471,12 +460,14 @@ namespace Footsies
                 //Next step: having followups knock down
                 //then, letting any normal followup with another normal
 
-                if (CanBeKnockedDown() || attackData.isPowerAttack)
+                if (CanBeKnockedDown() || attackData.isPowerAttack || attackBuffered)
                 {
+                    Debug.Log("Followed up!");
                     SetCurrentAction((int)CommonActionID.DEAD);
                 }
                 else
                 {
+                    Debug.Log("none");
                     SetCurrentAction(attackData.damageActionID);
                 }
 
@@ -573,6 +564,12 @@ namespace Footsies
             else return false;
         }
 
+        public void GetKnockedDown()
+        {
+            Debug.Log("get");
+            isKnockedDown();
+        }
+
         /// <summary>
         /// Request action, if condition is met then set the requested action to current action
         /// </summary>
@@ -605,8 +602,8 @@ namespace Footsies
                     {
                         if (cancelData.execute)
                         {
-                            Debug.Log("Followup!");
-                            followupMove = true;
+                            //Debug.Log("Followup!");
+                            followupMove = true; //pass this to battlecore, then back to defender
                             //knockdown here rather than on the move property
                             bufferActionID = actionID;
                             return true;
@@ -652,7 +649,7 @@ namespace Footsies
 
             return false;
         }
-        private bool CanBuffer()
+        public bool CanBuffer()
         {
             if (bufferActionID != -1
                 && canCancelAttack()
@@ -700,9 +697,7 @@ namespace Footsies
             for (int i = 1; i < fighterData.specialAttackHoldFrame; i++)
             {
                 if (!IsAttackInput(input[i]))
-                {
                     return false;
-                }
             }
 
             return true;
@@ -742,9 +737,7 @@ namespace Footsies
             for (int i = 1; i < fighterData.dashAllowFrame; i++)
             {
                 if (IsForwardInput(input[i]))
-                {
                     return false;
-                }
 
                 if (IsBackwardInput(input[i]))
                 {
@@ -765,7 +758,6 @@ namespace Footsies
             if (!IsEvadeInput(inputDown[0])){
                 return false;
 
-
             }
 
             return false;
@@ -784,26 +776,18 @@ namespace Footsies
         private bool IsForwardInput(int input)
         {
             if(isFaceRight)
-            {
                 return (input & (int)InputDefine.Right) > 0;
-            }
             else
-            {
                 return (input & (int)InputDefine.Left) > 0;
-            }
 
         }
 
         private bool IsBackwardInput(int input)
         {
             if (isFaceRight)
-            {
                 return (input & (int)InputDefine.Left) > 0;
-            }
             else
-            {
                 return (input & (int)InputDefine.Right) > 0;
-            }
 
         }
 
