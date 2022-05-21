@@ -116,7 +116,7 @@ namespace Footsies
 
         private int bufferActionID = -1;
         private int reserveDamageActionID = -1;
-        private bool followupMove = false;
+        public bool followupMove = false;
 
         public int spriteShakePosition { get; private set; }
         private int maxSpriteShakeFrame = 6;
@@ -503,6 +503,15 @@ namespace Footsies
             return true;
         }
 
+        public bool CanAttackerBuffer()
+        {
+            if (CanBuffer())
+            {
+                return true;
+            }
+            else return false;
+        }
+
         public AttackData getAttackData(int attackID)
         {
             if (!fighterData.attackData.ContainsKey(attackID))
@@ -556,18 +565,12 @@ namespace Footsies
 
         private bool isKnockedDown()
         {
-            if (guardHealth <= 0 || vitalHealth <= 0 || followupMove)
+            if (guardHealth <= 0 || vitalHealth <= 0)// || followupMove)
             {
                 SetCurrentAction((int)CommonActionID.DEAD);
                 return true;
             }
             else return false;
-        }
-
-        public void GetKnockedDown()
-        {
-            Debug.Log("get");
-            isKnockedDown();
         }
 
         /// <summary>
@@ -649,7 +652,7 @@ namespace Footsies
 
             return false;
         }
-        public bool CanBuffer()
+        private bool CanBuffer()
         {
             if (bufferActionID != -1
                 && canCancelAttack()

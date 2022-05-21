@@ -3,15 +3,16 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 461913c0cd8d9a345b1a4f87a0789dcf, type: 3}
   m_Name: F00
   m_EditorClassIdentifier: 
-  startGuardHealth: 3
+  startGuardHealth: 30
   forwardMoveSpeed: 2.2
   backwardMoveSpeed: 1.8
   dashAllowFrame: 9
