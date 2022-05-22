@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -421,6 +420,10 @@ namespace Footsies
 
         void CalculateStageDamage(Fighter fighter, float pushboxX)
         {
+            if (fighter.currentActionID == (int)CommonActionID.DEAD)
+            {
+                //end round
+            }
             if (fighter.currentActionID != (int)CommonActionID.DEAD)
             {
                 Vector2 damagePos = Vector2.zero;
@@ -486,7 +489,6 @@ namespace Footsies
                                     damagePos.y = (y1 + y2) / 2;
                                     break;
                                 }
-
                             }
                         }
 
@@ -496,12 +498,12 @@ namespace Footsies
 
                     if (isHit)
                     {
-                        Debug.Log(attacker.followupMove);
+                        //Debug.Log(attacker.followupMove);
                         attacker.NotifyAttackHit(damaged, damagePos, attackTrade);
                         var damageResult = damaged.NotifyDamaged(attacker.getAttackData(hitAttackID), damagePos, attackTrade, true);
-                        //check if the attacker canCancelAttack(), then pass that to damaged opponent to apply Dead animation and KO
+                        /*check if the attacker canCancelAttack(), then pass that to damaged opponent to apply Dead animation and KO
                         //need to remove round system, just KO players after every followup attack/ring out/power attack
-                        //maybe keep vitality system behind guard system? and have power attacks, followups and ring outs deal one vitality damage
+                        maybe keep vitality system behind guard system? and have power attacks, followups and ring outs deal one vitality damage*/
 
                         var hitStunFrame = attacker.GetHitStunFrame(damageResult, hitAttackID);
                         attacker.SetHitStun(hitStunFrame);
@@ -541,6 +543,7 @@ namespace Footsies
                 lastRoundP1Input[i] = recordingP1Input[i].ShallowCopy();
                 lastRoundP2Input[i] = recordingP2Input[i].ShallowCopy();
             }
+
             lastRoundMaxRecordingInput = currentRecordingInputIndex;
 
             isReplayingLastRoundInput = false;
@@ -560,7 +563,6 @@ namespace Footsies
 
             if (isDebugPause)
             {
-                // press f2 during debug pause to 
                 if (Input.GetKeyDown(KeyCode.F2))
                     return false;
                 else
@@ -586,5 +588,4 @@ namespace Footsies
                 return p1FrameLeft - p2FrameLeft;
         }
     }
-
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Footsies
@@ -74,10 +73,10 @@ namespace Footsies
     public enum DamageResult
     {
         Damage,
-        Guard ,
+        Guard,
         GuardBreak,
     }
-  
+
     public class Fighter
     {
         public Vector2 position;
@@ -89,7 +88,7 @@ namespace Footsies
         public Pushbox pushbox;
 
         private FighterData fighterData;
-        public bool isDead {  get { return isKnockedDown(); } }
+        public bool isDead { get { return isKnockedDown(); } }
         public int vitalHealth { get; private set; }
         public int guardHealth { get; private set; }
 
@@ -100,8 +99,8 @@ namespace Footsies
         public int currentActionFrameCount { get { return fighterData.actions[currentActionID].frameCount; } }
         private bool isActionEnd { get { return (currentActionFrame >= fighterData.actions[currentActionID].frameCount); } }
         public bool isAlwaysCancelable { get { return fighterData.actions[currentActionID].alwaysCancelable; } }
-        
-        public int currentActionHitCount{ get; private set; }
+
+        public int currentActionHitCount { get; private set; }
 
         public int currentHitStunFrame { get; private set; }
         public bool isInHitStun { get { return currentHitStunFrame > 0; } }
@@ -145,7 +144,7 @@ namespace Footsies
 
             SetCurrentAction((int)CommonActionID.STAND);
         }
-        
+
         /// <summary>
         /// Update action frame
         /// </summary>
@@ -170,7 +169,7 @@ namespace Footsies
             // For loop motion (winning pose etc.) set action frame back to loop start frame
             if (isActionEnd)
             {
-                if(fighterData.actions[currentActionID].isLoop)
+                if (fighterData.actions[currentActionID].isLoop)
                 {
                     currentActionFrame = fighterData.actions[currentActionID].loopFromFrame;
                 }
@@ -184,7 +183,7 @@ namespace Footsies
         public void UpdateInput(InputData inputData)
         {
             // Shift input history by 1 frame
-            for(int i = input.Length - 1; i >= 1; i--)
+            for (int i = input.Length - 1; i >= 1; i--)
             {
                 input[i] = input[i - 1];
                 inputDown[i] = inputDown[i - 1];
@@ -211,7 +210,7 @@ namespace Footsies
         /// </summary>
         public void UpdateActionRequest()
         {
-            if(hasWon)
+            if (hasWon)
             {
                 RequestAction((int)CommonActionID.WIN);
                 return;
@@ -230,7 +229,6 @@ namespace Footsies
             {
                 Debug.Log("BUFFER");
                 SetCurrentAction(bufferActionID);
-                //SetCurrentAction((int)CommonActionID.DEAD);
                 bufferActionID = -1;
                 return;
             }
@@ -239,9 +237,10 @@ namespace Footsies
             var isBackward = IsBackwardInput(input[0]);
             bool isAttack = IsAttackInput(inputDown[0]);
             bool isEvade = IsEvadeInput(inputDown[0]);
+
             if (CheckSpecialAttackInput())
             {
-                    RequestAction((int)CommonActionID.N_SPECIAL);
+                RequestAction((int)CommonActionID.N_SPECIAL);
             }
             else if (isAttack)
             {
@@ -262,7 +261,7 @@ namespace Footsies
                 }
             }
 
-            if(CheckForwardDashInput())
+            if (CheckForwardDashInput())
                 RequestAction((int)CommonActionID.DASH_FORWARD);
             else if (CheckBackwardDashInput())
                 RequestAction((int)CommonActionID.DASH_BACKWARD);
@@ -282,7 +281,7 @@ namespace Footsies
             }
             else if (isBackward)
             {
-                if(isReserveProximityGuard)
+                if (isReserveProximityGuard)
                     RequestAction((int)CommonActionID.GUARD_PROXIMITY);
                 else
                     RequestAction((int)CommonActionID.BACKWARD);
@@ -299,7 +298,7 @@ namespace Footsies
         {
             if (isInHitStun
                 || fighterData.actions[currentActionID].isInStance != true)
-                //can players after getting hit, match stance to block next hit of the combo? 
+            //can players after getting hit, match stance to block next hit of the combo? 
             {
                 currentStanceID = (int)CommonStanceID.NOGUARD;
                 return;
@@ -393,7 +392,7 @@ namespace Footsies
         public void NotifyAttackHit(Fighter damagedFighter, Vector2 damagePos, bool attackTrade)
         {
             currentActionHitCount++;
-            
+
             if (attackTrade)
             {
                 SetCurrentAction((int)CommonActionID.GUARD_TRADE);
@@ -443,7 +442,9 @@ namespace Footsies
             else
             {
                 //deal damage to guard health
-                guardHealth -= attackData.guardHealthDamage;
+                if (!fighterData.invincibility)
+                    guardHealth -= attackData.guardHealthDamage;
+
                 if (guardHealth < 0)
                 {
                     isGuardBreak = true;
@@ -451,16 +452,17 @@ namespace Footsies
 
                     if (attackData.vitalHealthDamage > 0)
                     {
-                        vitalHealth -= attackData.vitalHealthDamage;
+                        if (!fighterData.invincibility)
+                            vitalHealth -= attackData.vitalHealthDamage;
                         if (vitalHealth <= 0)
                             vitalHealth = 0;
                     }
                 }
-                Debug.Log("Need to set damageID dynamiclly, to be set on the second hit of a combo (and for it to be called on ring out");
+                //Debug.Log("Need to set damageID dynamiclly, to be set on the second hit of a combo (and for it to be called on ring out");
                 //Next step: having followups knock down
                 //then, letting any normal followup with another normal
 
-                if (CanBeKnockedDown() || attackData.isPowerAttack || attackBuffered)
+                /*if (CanBeKnockedDown() || attackData.isPowerAttack || attackBuffered)
                 {
                     Debug.Log("Followed up!");
                     SetCurrentAction((int)CommonActionID.DEAD);
@@ -469,7 +471,7 @@ namespace Footsies
                 {
                     Debug.Log("none");
                     SetCurrentAction(attackData.damageActionID);
-                }
+                }*/
 
                 return DamageResult.Damage;
             }
@@ -477,13 +479,14 @@ namespace Footsies
 
         public void RingOutNotifyDamage(int ringOutDamage)
         {
-                SetCurrentAction((int)CommonActionID.DEAD);
+            SetCurrentAction((int)CommonActionID.DEAD);
+            if (!fighterData.invincibility)
                 guardHealth -= ringOutDamage;
         }
 
         public void NotifyInProximityGuardRange()
         {
-            if(isInputBackward)
+            if (isInputBackward)
             {
                 isReserveProximityGuard = true;
             }
@@ -491,7 +494,7 @@ namespace Footsies
 
         public bool CanAttackHit(int attackID)
         {
-            if(!fighterData.attackData.ContainsKey(attackID))
+            if (!fighterData.attackData.ContainsKey(attackID))
             {
                 Debug.LogWarning("Attack hit but AttackID=" + attackID + " is not registered");
                 return true;
@@ -519,7 +522,7 @@ namespace Footsies
                 Debug.LogWarning("Attack hit but AttackID=" + attackID + " is not registered");
                 return null;
             }
-            
+
             return fighterData.attackData[attackID];
         }
 
@@ -538,7 +541,7 @@ namespace Footsies
 
         public int GetHitStunFrame(DamageResult damageResult, int attackID)
         {
-            if(damageResult == DamageResult.Guard)
+            if (damageResult == DamageResult.Guard)
                 return fighterData.attackData[attackID].guardStunFrame;
             else if (damageResult == DamageResult.GuardBreak)
                 return fighterData.attackData[attackID].guardBreakStunFrame;
@@ -559,7 +562,7 @@ namespace Footsies
         public bool CanBeKnockedDown()
         {
             if (currentActionID == (int)CommonActionID.DASH_FORWARD || currentActionID == (int)CommonActionID.DASH_BACKWARD)
-                    return true;
+                return true;
             return false;
         }
 
@@ -642,7 +645,7 @@ namespace Footsies
                 inputUp[i] = 0;
             }
         }
-        
+
         private bool canCancelAttack()
         {
             if (fighterData.canCancelOnWhiff)
@@ -679,7 +682,7 @@ namespace Footsies
             reserveDamageActionID = -1;
             spriteShakePosition = 0;
 
-            if(fighterData.actions[currentActionID].audioClip != null)
+            if (fighterData.actions[currentActionID].audioClip != null)
             {
                 if (currentActionID == (int)CommonActionID.GUARD_BREAK)
                     return;
@@ -687,7 +690,7 @@ namespace Footsies
                 SoundManager.Instance.playFighterSE(fighterData.actions[currentActionID].audioClip, isFaceRight, position.x);
             }
         }
-        
+
         /// <summary>
         /// Special attack input check (hold and release)
         /// </summary>
@@ -710,8 +713,8 @@ namespace Footsies
         {
             if (!IsForwardInput(inputDown[0]))
                 return false;
-            
-            for(int i = 1; i < fighterData.dashAllowFrame; i++)
+
+            for (int i = 1; i < fighterData.dashAllowFrame; i++)
             {
                 if (IsBackwardInput(input[i]))
                 {
@@ -720,7 +723,7 @@ namespace Footsies
 
                 if (IsForwardInput(input[i]))
                 {
-                    for(int j = i + 1; j < i + fighterData.dashAllowFrame; j++)
+                    for (int j = i + 1; j < i + fighterData.dashAllowFrame; j++)
                     {
                         if (!IsForwardInput(input[j]) && !IsBackwardInput(input[j]))
                             return true;
@@ -758,7 +761,8 @@ namespace Footsies
 
         private bool CheckEvadeInput()
         {
-            if (!IsEvadeInput(inputDown[0])){
+            if (!IsEvadeInput(inputDown[0]))
+            {
                 return false;
 
             }
@@ -778,7 +782,7 @@ namespace Footsies
 
         private bool IsForwardInput(int input)
         {
-            if(isFaceRight)
+            if (isFaceRight)
                 return (input & (int)InputDefine.Right) > 0;
             else
                 return (input & (int)InputDefine.Left) > 0;

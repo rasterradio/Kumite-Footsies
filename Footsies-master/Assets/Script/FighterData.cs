@@ -10,6 +10,8 @@ namespace Footsies
     [CreateAssetMenu]
     public class FighterData : ScriptableObject
     {
+        public bool invincibility = false;
+
         public int startGuardHealth = 3;
 
         public float forwardMoveSpeed = 2.2f;
