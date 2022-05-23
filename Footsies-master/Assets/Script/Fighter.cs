@@ -88,7 +88,8 @@ namespace Footsies
         public Pushbox pushbox;
 
         private FighterData fighterData;
-        public bool isDead { get { return isKnockedDown(); } }
+        public bool isDead { get { return isUnconscious(); } }
+        public bool isDowned { get { return isKnockedDown(); } }
         public int vitalHealth { get; private set; }
         public int guardHealth { get; private set; }
 
@@ -410,17 +411,6 @@ namespace Footsies
                 return DamageResult.Guard;
             }
 
-            if (attackData.guardHealthDamage > 0)
-            {
-                //deal damage to guard health
-                /*guardHealth -= attackData.guardHealthDamage;
-                if (guardHealth < 0)
-                {
-                    isGuardBreak = true;
-                    guardHealth = 0;
-                }*/
-            }
-
             if ((int)attackData.stanceType == currentStanceID)
             //    || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
             {
@@ -441,6 +431,13 @@ namespace Footsies
 
             else
             {
+                if (attackData.vitalHealthDamage > 0)
+                {
+                        vitalHealth -= attackData.vitalHealthDamage;
+                    if (vitalHealth <= 0)
+                        vitalHealth = 0;
+                }
+
                 //deal damage to guard health
                 if (!fighterData.invincibility)
                     guardHealth -= attackData.guardHealthDamage;
@@ -449,29 +446,16 @@ namespace Footsies
                 {
                     isGuardBreak = true;
                     guardHealth = 0;
-
-                    if (attackData.vitalHealthDamage > 0)
-                    {
-                        if (!fighterData.invincibility)
-                            vitalHealth -= attackData.vitalHealthDamage;
-                        if (vitalHealth <= 0)
-                            vitalHealth = 0;
-                    }
                 }
-                //Debug.Log("Need to set damageID dynamiclly, to be set on the second hit of a combo (and for it to be called on ring out");
-                //Next step: having followups knock down
-                //then, letting any normal followup with another normal
 
-                /*if (CanBeKnockedDown() || attackData.isPowerAttack || attackBuffered)
+                if (CanBeKnockedDown() || attackData.isPowerAttack)// || attackBuffered)
                 {
-                    Debug.Log("Followed up!");
                     SetCurrentAction((int)CommonActionID.DEAD);
                 }
                 else
                 {
-                    Debug.Log("none");
                     SetCurrentAction(attackData.damageActionID);
-                }*/
+                }
 
                 return DamageResult.Damage;
             }
@@ -559,7 +543,7 @@ namespace Footsies
             hasWon = true;
         }
 
-        public bool CanBeKnockedDown()
+        public bool CanBeKnockedDown() //pass this back to battlecore and to attacker?
         {
             if (currentActionID == (int)CommonActionID.DASH_FORWARD || currentActionID == (int)CommonActionID.DASH_BACKWARD)
                 return true;
@@ -568,7 +552,21 @@ namespace Footsies
 
         private bool isKnockedDown()
         {
-            if (guardHealth <= 0 || vitalHealth <= 0)// || followupMove)
+            if (guardHealth <= 0) return false;
+
+            if (vitalHealth <= 0) // || followupMove)
+            {
+                //SetCurrentAction((int)CommonActionID.DEAD);
+                Debug.Log("Need to set dead status, unconscious in just one spot.");
+                return true;
+            }
+            else return false;
+        }
+
+        private bool isUnconscious()
+        {
+
+            if (guardHealth <= 0)
             {
                 SetCurrentAction((int)CommonActionID.DEAD);
                 return true;
@@ -576,13 +574,13 @@ namespace Footsies
             else return false;
         }
 
-        /// <summary>
-        /// Request action, if condition is met then set the requested action to current action
-        /// </summary>
-        /// <param name="actionID"></param>
-        /// <param name="startFrame"></param>
-        /// <returns></returns>
-        public bool RequestAction(int actionID, int startFrame = 0)
+            /// <summary>
+            /// Request action, if condition is met then set the requested action to current action
+            /// </summary>
+            /// <param name="actionID"></param>
+            /// <param name="startFrame"></param>
+            /// <returns></returns>
+            public bool RequestAction(int actionID, int startFrame = 0)
         {
             if (isActionEnd)
             {

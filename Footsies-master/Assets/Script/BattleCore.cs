@@ -15,6 +15,7 @@ namespace Footsies
             Stop,
             Intro,
             Fight,
+            Reset,
             KO,
             End,
         }
@@ -87,6 +88,7 @@ namespace Footsies
 
         private float introStateTime = 3f;
         private float koStateTime = 2f;
+        private float resetStateTime = 2f;
         private float endStateTime = 3f;
         private float endStateSkippableTime = 1.5f;
 
@@ -150,7 +152,24 @@ namespace Footsies
                         ChangeRoundState(RoundStateType.KO);
                     }
 
+                    var knockedFighter = _fighters.Find((f) => f.isDowned);
+                    if (deadFighter != null)
+                    {
+                        ChangeRoundState(RoundStateType.Reset);
+                    }
+
                     break;
+                case RoundStateType.Reset:
+
+                    UpdateResetState();
+                    timer -= Time.deltaTime;
+                    if (timer <= 0f)
+                    {
+                        ChangeRoundState(RoundStateType.End);
+                    }
+
+                    break;
+
                 case RoundStateType.KO:
 
                     UpdateKOState();
@@ -210,6 +229,20 @@ namespace Footsies
                     currentRecordingInputIndex = 0;
 
                     break;
+                case RoundStateType.Reset:
+
+                    timer = resetStateTime;
+
+                    CopyLastRoundInput();
+
+                    fighter1.ClearInput();
+                    fighter2.ClearInput();
+
+                    battleAI = null;
+
+                    roundUIAnimator.SetTrigger("RoundStart");
+
+                    break;
                 case RoundStateType.KO:
 
                     timer = koStateTime;
@@ -225,7 +258,6 @@ namespace Footsies
 
                     break;
                 case RoundStateType.End:
-
                     timer = endStateTime;
 
                     var deadFighter = _fighters.FindAll((f) => f.isDead);
@@ -283,6 +315,11 @@ namespace Footsies
             UpdatePushCharacterVsCharacter();
             UpdatePushCharacterVsBackground();
             UpdateHitboxHurtboxCollision();
+        }
+
+        void UpdateResetState()
+        {
+
         }
 
         void UpdateKOState()
