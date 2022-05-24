@@ -94,7 +94,6 @@ namespace Footsies
 
         void Awake()
         {
-            // Setup dictionary from ScriptableObject data
             fighterDataList.ForEach((data) => data.setupDictionary());
 
             fighter1 = new Fighter();
@@ -359,7 +358,7 @@ namespace Footsies
             if (debugP1Attack)
                 p1Input.input |= (int)InputDefine.Attack;
             if (debugP1Guard)
-                p1Input.input |= (int)InputDefine.Left; //need to change this to always match stance
+                p1Input.input |= (int)InputDefine.Left; //change this to always match stance
 
             return p1Input;
         }
