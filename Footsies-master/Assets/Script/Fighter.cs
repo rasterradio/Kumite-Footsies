@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Footsies
 {
-
     public class BoxBase
     {
         public Rect rect;
@@ -89,7 +88,8 @@ namespace Footsies
 
         private FighterData fighterData;
         public bool isDead { get { return isUnconscious(); } }
-        public bool isDowned { get { return isKnockedDown(); } }
+        public bool isDowned { get { return vitalHealth <= 0; } }
+        //public bool isDowned { get { return isKnockedDown(); } }
         public int vitalHealth { get; private set; }
         public int guardHealth { get; private set; }
 
@@ -123,12 +123,6 @@ namespace Footsies
 
         private bool hasWon = false;
 
-        /// <summary>
-        /// Setup fighter at the start of battle
-        /// </summary>
-        /// <param name="fighterData"></param>
-        /// <param name="startPosition"></param>
-        /// <param name="isPlayerOne"></param>
         public void SetupBattleStart(FighterData fighterData, Vector2 startPosition, bool isPlayerOne)
         {
             this.fighterData = fighterData;
@@ -177,10 +171,6 @@ namespace Footsies
             }
         }
 
-        /// <summary>
-        /// UpdateInput
-        /// </summary>
-        /// <param name="inputData"></param>
         public void UpdateInput(InputData inputData)
         {
             // Shift input history by 1 frame
@@ -198,17 +188,11 @@ namespace Footsies
             //Debug.Log(System.Convert.ToString(input[0], 2) + " " + System.Convert.ToString(inputDown[0], 2) + " " + System.Convert.ToString(inputUp[0], 2));
         }
 
-        /// <summary>
-        /// Action request for intro state ()
-        /// </summary>
         public void UpdateIntroAction()
         {
             RequestAction((int)CommonActionID.STAND);
         }
 
-        /// <summary>
-        /// Update action request
-        /// </summary>
         public void UpdateActionRequest()
         {
             if (hasWon)
@@ -228,7 +212,7 @@ namespace Footsies
 
             if (CanBuffer())
             {
-                Debug.Log("BUFFER");
+                //Debug.Log("BUFFER");
                 SetCurrentAction(bufferActionID);
                 bufferActionID = -1;
                 return;
@@ -364,11 +348,6 @@ namespace Footsies
             ApplyCurrentActionData();
         }
 
-        /// <summary>
-        /// Apply position changed to all variable
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
         public void ApplyPositionChange(float x, float y)
         {
             position.x += x;
@@ -395,9 +374,7 @@ namespace Footsies
             currentActionHitCount++;
 
             if (attackTrade)
-            {
                 SetCurrentAction((int)CommonActionID.GUARD_TRADE);
-            }
         }
 
         public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos, bool attackTrade, bool attackBuffered)
@@ -412,7 +389,6 @@ namespace Footsies
             }
 
             if ((int)attackData.stanceType == currentStanceID)
-            //    || fighterData.actions[currentActionID].Type == ActionType.Guard) // if in blocking motion, automatically block next attack
             {
                 if (isGuardBreak)
                 {
@@ -431,13 +407,6 @@ namespace Footsies
 
             else
             {
-                if (attackData.vitalHealthDamage > 0)
-                {
-                        vitalHealth -= attackData.vitalHealthDamage;
-                    if (vitalHealth <= 0)
-                        vitalHealth = 0;
-                }
-
                 //deal damage to guard health
                 if (!fighterData.invincibility)
                     guardHealth -= attackData.guardHealthDamage;
@@ -448,9 +417,18 @@ namespace Footsies
                     guardHealth = 0;
                 }
 
+                int doesVitalDamage = attackData.dealVitalHealthDamage ? 1: 0;
+
+                if (doesVitalDamage > 0)
+                {
+                    vitalHealth -= doesVitalDamage;
+                    if (vitalHealth <= 0)
+                        vitalHealth = 0;
+                }
+
                 if (CanBeKnockedDown() || attackData.isPowerAttack)// || attackBuffered)
                 {
-                    SetCurrentAction((int)CommonActionID.DEAD);
+                    SetCurrentAction((int)CommonActionID.DEAD); //should only set player status to dead in this block of code
                 }
                 else
                 {
@@ -552,7 +530,7 @@ namespace Footsies
 
         private bool isKnockedDown()
         {
-            if (guardHealth <= 0) return false;
+            if (!isUnconscious()) return false;
 
             if (vitalHealth <= 0) // || followupMove)
             {
@@ -565,7 +543,6 @@ namespace Footsies
 
         private bool isUnconscious()
         {
-
             if (guardHealth <= 0)
             {
                 SetCurrentAction((int)CommonActionID.DEAD);
@@ -574,12 +551,6 @@ namespace Footsies
             else return false;
         }
 
-            /// <summary>
-            /// Request action, if condition is met then set the requested action to current action
-            /// </summary>
-            /// <param name="actionID"></param>
-            /// <param name="startFrame"></param>
-            /// <returns></returns>
             public bool RequestAction(int actionID, int startFrame = 0)
         {
             if (isActionEnd)
@@ -621,7 +592,6 @@ namespace Footsies
                     else followupMove = false;
                 }
             }
-
             return false;
         }
 
@@ -665,11 +635,6 @@ namespace Footsies
             else return false;
         }
 
-        /// <summary>
-        /// Set current action
-        /// </summary>
-        /// <param name="actionID"></param>
-        /// <param name="startFrame"></param>
         private void SetCurrentAction(int actionID, int startFrame = 0)
         {
             currentActionID = actionID;
@@ -689,10 +654,6 @@ namespace Footsies
             }
         }
 
-        /// <summary>
-        /// Special attack input check (hold and release)
-        /// </summary>
-        /// <returns></returns>
         private bool CheckSpecialAttackInput()
         {
             if (!IsAttackInput(inputUp[0]))
@@ -806,9 +767,6 @@ namespace Footsies
             return (input & (int)InputDefine.Down) > 0;
         }
 
-        /// <summary>
-        /// Copy data from current action and convert relative box position with fighter position
-        /// </summary>
         private void ApplyCurrentActionData()
         {
             hitboxes.Clear();

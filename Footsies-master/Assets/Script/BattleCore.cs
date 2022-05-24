@@ -151,16 +151,17 @@ namespace Footsies
                     {
                         ChangeRoundState(RoundStateType.KO);
                     }
-
-                    var knockedFighter = _fighters.Find((f) => f.isDowned);
-                    if (deadFighter != null)
+                    else
                     {
-                        ChangeRoundState(RoundStateType.Reset);
+                        var knockedFighter = _fighters.Find((f) => f.isDowned);
+                        if (knockedFighter != null)
+                        {
+                            ChangeRoundState(RoundStateType.Reset);
+                        }
                     }
 
                     break;
                 case RoundStateType.Reset:
-
                     UpdateResetState();
                     timer -= Time.deltaTime;
                     if (timer <= 0f)
@@ -239,8 +240,6 @@ namespace Footsies
                     fighter2.ClearInput();
 
                     battleAI = null;
-
-                    roundUIAnimator.SetTrigger("RoundStart");
 
                     break;
                 case RoundStateType.KO:

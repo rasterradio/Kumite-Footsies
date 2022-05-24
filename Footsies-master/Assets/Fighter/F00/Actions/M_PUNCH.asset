@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4584c2b0869048f45b79bdfd2854d58c, type: 3}
-  m_Name: N_ATTACK
+  m_Name: M_PUNCH
   m_EditorClassIdentifier: 
   actionID: 100
-  actionName: N_ATTACK
+  actionName: M_PUNCH
   Type: 1
   frameCount: 21
   isLoop: 0
@@ -97,4 +97,4 @@ MonoBehaviour:
     actionID: 6e000000
   alwaysCancelable: 0
   audioClip: {fileID: 8300000, guid: 15f19933973c62f408011e11283da300, type: 3}
-  Stance: 0
+  isInStance: 0

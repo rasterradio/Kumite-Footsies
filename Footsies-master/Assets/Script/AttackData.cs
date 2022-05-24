@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Footsies
+﻿namespace Footsies
 {
     [System.Serializable]
     public class AttackData
@@ -15,7 +11,7 @@ namespace Footsies
 
         public int numberOfHit;
 
-        public int vitalHealthDamage;
+        public bool dealVitalHealthDamage;
         public int guardHealthDamage;
 
         public int hitStunFrame;
