@@ -88,7 +88,7 @@ namespace Footsies
 
         private float introStateTime = 3f;
         private float koStateTime = 2f;
-        private float resetStateTime = 2f;
+        private float resetStateTime = .5f;
         private float endStateTime = 3f;
         private float endStateSkippableTime = 1.5f;
 
@@ -443,12 +443,14 @@ namespace Footsies
                     //f.ApplyPositionChange(stageMinX - f.pushbox.xMin, f.position.y);
 
                     CalculateStageDamage(f, f.pushbox.xMin);
+                    ChangeRoundState(RoundStateType.Reset);
                 }
                 else if (f.pushbox.xMax > stageMaxX)
                 {
                     //f.ApplyPositionChange(stageMaxX - f.pushbox.xMax, f.position.y);
 
                     CalculateStageDamage(f, f.pushbox.xMax);
+                    ChangeRoundState(RoundStateType.Reset);
                 }
             });
         }
